@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<productionorder>
+  <projectnumber>32771</projectnumber>
+  <productionordernumber>P00018</productionordernumber>
+  <date>2/07/2020 10:37:33</date>
+  <parts>
+    <part>
+      <number>32771-P00018</number>
+      <name>Isolatiemanchetten</name>
+      <version>00.1</version>
+      <dimension>
+      </dimension>
+      <operations />
+    </part>
+    <part>
+      <number>C03264432</number>
+      <name>Isolatiemanchet M30x32 - Ertalon</name>
+      <version>00.1</version>
+      <dimension>32</dimension>
+      <operations>
+        <operation>VP</operation>
+      </operations>
+    </part>
+  </parts>
+  <usageLinks>
+    <usageLink>
+      <parent>
+        <number>32771-P00018</number>
+        <version>00.1</version>
+      </parent>
+      <child>
+        <number>C03264432</number>
+        <version>00.1</version>
+      </child>
+      <quantity>21</quantity>
+      <certificate>
+      </certificate>
+    </usageLink>
+  </usageLinks>
+</productionorder>

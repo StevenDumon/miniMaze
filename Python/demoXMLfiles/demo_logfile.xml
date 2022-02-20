@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<productionorder>
+  <projectnumber>31033</projectnumber>
+  <productionordernumber>P00001</productionordernumber>
+  <date>26/02/2019 11:01:20</date>
+  <parts>
+    <part>
+      <number>31033-001-001</number>
+      <name>T-701 GA DRAWING</name>
+      <version>00.1</version>
+      <dimension>
+      </dimension>
+      <operations />
+    </part>
+    <part>
+      <number>31033-001-010</number>
+      <name>T701 - BOTTOM</name>
+      <version>00.14</version>
+      <dimension>Dia. 13m</dimension>
+      <operations />
+    </part>
+  </parts>
+  <usageLinks>
+    <usageLink>
+      <parent>
+        <number>31033-001-001</number>
+        <version>00.1</version>
+      </parent>
+      <child>
+        <number>31033-001-010</number>
+        <version>00.14</version>
+      </child>
+      <quantity>1</quantity>
+      <certificate>
+      </certificate>
+    </usageLink>
+  </usageLinks>
+</productionorder>
