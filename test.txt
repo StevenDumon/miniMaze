@@ -1,1 +1,2 @@
 Text file modified (again)
+Modify after clone
