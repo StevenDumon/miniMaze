@@ -52,7 +52,7 @@
 			</section>
 
 		<!-- Footer -->
-			<footer id="footer">
+		<!--	<footer id="footer">
 				<div class="container">
 					<ul class="icons">
 						<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
@@ -61,10 +61,10 @@
 						<li><a href="#" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
 					</ul>
 				</div>
-				<!--<div class="copyright">
+				<div class="copyright">
 					&copy; Untitled. All rights reserved.
-				</div>-->
-			</footer>
+				</div>
+			</footer>-->
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>

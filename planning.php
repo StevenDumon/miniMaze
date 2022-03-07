@@ -48,7 +48,7 @@
 						<h2>Generic Page Template</h2>
 					</header>
 				</div>
-			</section>->
+			</section>-->
 
 			<!-- Two -->
 			<section id="two" class="wrapper style2">
