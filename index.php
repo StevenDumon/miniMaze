@@ -44,13 +44,6 @@
 									</header>
 									<p>
 										Explore part information, part structures and history.
-										<!--<br><a href="selectPart_autocomplete.html">Part selector</a> autocomplete.-->
-										<?php
-											$query = "SELECT DISTINCT Number FROM XML_demo.Parts WHERE Number LIKE '%32895%'";
-											$query = "SELECT DISTINCT Number FROM XML_demo.Parts";
-											$result = $conn->query($query);
-											// echo "<br>Option list contains " . $result->num_rows . " autocomplete options.";
-										?>
 									</p>
 
 									<!--Make sure the form has the autocomplete function switched off:-->
@@ -110,7 +103,7 @@
 									</header>
 									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
 									<footer class="align-center">
-										<a href="newProductionOrde.php" class="button alt">New Production Order</a>
+										<a href="newProductionOrder.php" class="button alt">New Production Order</a>
 									</footer>
 								</div>
 							</div> <!-- end of class Box" -->

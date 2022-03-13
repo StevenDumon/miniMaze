@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>miniMaze</title>
+		<title>miniMaze - New Production Order</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -16,139 +16,179 @@
 
 		<!-- Header -->
 			<header id="header">
-				<div class="logo"><!--<a href="index.php">Hielo <span>by TEMPLATED</span></a>-->miniMaze</div>
+				<div class="logo"><!--<a href="index.php">Hielo <span>by TEMPLATED</span></a>-->miniMaze - New Production Order</div>
 				<a href="#menu">Menu</a>
 			</header>
 
     <?php writeMenu(); ?>
 
-		<!-- One -->
-			<section id="one" class="wrapper style2">
+
+		<!-- Two -->
+			<section id="two" class="wrapper style2">
 				<div class="inner">
-					<div class="grid-style">
+					<div class="box">
+						<div class="content">
+							<!--<header class="align-center">
+								<p>maecenas sapien feugiat ex purus</p>
+								<h2>Lorem ipsum dolor</h2>
+							</header>
+						-->
 
-						<div> <!-- First box in grid -->
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic02.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>View part information</p>
-										<h2>Parts</h2>
-									</header>
-									<p>
-										Explore part information, part structures and history.
-										<!--<br><a href="selectPart_autocomplete.html">Part selector</a> autocomplete.-->
-										<?php
-											$query = "SELECT DISTINCT Number FROM XML_demo.Parts WHERE Number LIKE '%32895%'";
-											$query = "SELECT DISTINCT Number FROM XML_demo.Parts";
-											$result = $conn->query($query);
-											// echo "<br>Option list contains " . $result->num_rows . " autocomplete options.";
-										?>
-									</p>
-
-									<!--Make sure the form has the autocomplete function switched off:-->
-									<form autocomplete="off" action="part_details.php" method="get" enctype="multipart/form-data">
-				            <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
-										<footer class="align-center">
-											<input type="submit" value="Search" class="button alt">
-										</footer>
-				          </form>
+							<!--
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras at dignissim augue, in iaculis neque. Etiam bibendum felis ac vulputate pellentesque. Cras non blandit quam. Nunc porta, est non posuere sagittis, neque nunc pellentesque diam, a iaculis lacus urna vitae purus. In non dui vel est tempor faucibus. Aliquam erat volutpat. Quisque vel est vitae nibh laoreet auctor. In nec libero dui. Nulla ullamcorper, dolor nec accumsan viverra, libero eros rutrum metus, vel lacinia magna odio non nunc. Praesent semper felis eu rhoncus aliquam. Donec at quam ac libero vestibulum pretium. Nunc faucibus vel arcu in malesuada. Aenean at velit odio. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas commodo erat eget molestie sollicitudin. Donec imperdiet, ex sed blandit dictum, ipsum metus ultrices arcu, vitae euismod nisl sapien vitae tortor.</p>
+						-->
 
 
-									<!-- Autocomplete -->
-						      <script src="scripts/autoComplete.js"></script>
-									<script>
-										<?php
 
-											$query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
-							      	$result = $conn->query($query);
-											$numPart=0; // use counter to avoid printing comma before first result
+							<div class="row 200%">
+								<div class="6u 12u$(medium)">
+
+									<!-- Text stuff -->
+										<h3>Part</h3>
+										<p>New production order uses one part as root, the complete part structure is included in the production order</p>
+										<form autocomplete="off" action="part_details.php" method="get" enctype="multipart/form-data">
+					            <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
+					          </form>
 
 
-											if ($result->num_rows > 0){
-												// write array var declaration
-												echo 'var parts = [';
-												//echo '"option 1"';
+										<!-- Autocomplete -->
+							      <script src="scripts/autoComplete.js"></script>
+										<script>
+											<?php
 
-								        while($row = $result->fetch_assoc()){
-													$numPart++;
-								          $partNumber = $row["Number"];
-													if ($numPart!=1){echo ",";}
-								         	echo '"' . $partNumber . '"';
-								        } // end loop all results
+												$query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
+								      	$result = $conn->query($query);
+												$numPart=0; // use counter to avoid printing comma before first result
 
-												// write array variable closing
-												// echo ', "option 4"';
-												echo "];";
-						      		} // end if num_rows > 0
-											// end adding parts to textfield autocomplete
-										?>
-						      	autocomplete(document.getElementById("partNumber"), parts, 100);
-						      </script>
+
+												if ($result->num_rows > 0){
+													// write array var declaration
+													echo 'var parts = [';
+													//echo '"option 1"';
+
+									        while($row = $result->fetch_assoc()){
+														$numPart++;
+									          $partNumber = $row["Number"];
+														if ($numPart!=1){echo ",";}
+									         	echo '"' . $partNumber . '"';
+									        } // end loop all results
+
+													// write array variable closing
+													// echo ', "option 4"';
+													echo "];";
+							      		} // end if num_rows > 0
+												// end adding parts to textfield autocomplete
+											?>
+							      	autocomplete(document.getElementById("partNumber"), parts, 100);
+							      </script>
+
+										<div class="12u$">
+											<textarea name="description" id="description" placeholder="Description" rows="1"></textarea>
+										</div>
+
+										<hr \>
+
+										<h3>Planning</h3>
+										<form>
+					            <p></p>
+											<!-- Break -->
+											<div class="row uniform">
+											<div class="6u 12u$(xsmall)">
+												<p>Requested date</p>
+											</div>
+											<div class="6u$ 12u$(xsmall)">
+												<input type="date" id="requestedDateComplete" name="requestedDateComplete" placeholder="Date complete">
+											</div>
+										</div>
+											<div class="row uniform">
+											<div class="4u 12u$(small)">
+												<input type="radio" id="priority-low" name="priority">
+												<label for="priority-low">Low Priority</label>
+											</div>
+											<div class="4u 12u$(small)">
+												<input type="radio" id="priority-normal" name="priority" checked>
+												<label for="priority-normal">Normal Priority</label>
+											</div>
+											<div class="4u$ 12u$(small)">
+												<input type="radio" id="priority-high" name="priority">
+												<label for="priority-high">High Priority</label>
+											</div>
+										</div>
+
+					          </form>
+
+								</div>
+								<div class="6u$ 12u$(medium)">
+
+									<!-- Form -->
+										<h3>Info</h3>
+
+										<form method="post" action="#">
+											<div class="row uniform">
+												<div class="6u 12u$(xsmall)">
+													<input type="text" name="name" id="name" value="" placeholder="Name" />
+												</div>
+												<div class="6u$ 12u$(xsmall)">
+													<input type="email" name="email" id="email" value="" placeholder="Email" />
+												</div>
+												<div class="6u 12u$(xsmall)">
+													<select name="laskwaliteit" id="laskwaliteit">
+														<option value="">- Laskwaliteit -</option>
+														<option value="1">Manufacturing</option>
+														<option value="1">Shipping</option>
+														<option value="1">Administration</option>
+														<option value="1">Human Resources</option>
+													</select>
+												</div>
+												<div class="6u$ 12u$(xsmall)">
+													<div class="select-wrapper">
+														<select name="laskwaliteit" id="laskwaliteit">
+															<option value="">- Afwerkingsgraad -</option>
+															<option value="1">Manufacturing</option>
+															<option value="1">Shipping</option>
+															<option value="1">Administration</option>
+															<option value="1">Human Resources</option>
+														</select>
+													</div>
+												</div>
+
+												<!-- Break -->
+												<div class="4u 12u$(small)">
+													<input type="radio" id="priority-low" name="priority">
+													<label for="priority-low">Low Priority</label>
+												</div>
+												<div class="4u 12u$(small)">
+													<input type="radio" id="priority-normal" name="priority" checked>
+													<label for="priority-normal">Normal Priority</label>
+												</div>
+												<div class="4u$ 12u$(small)">
+													<input type="radio" id="priority-high" name="priority">
+													<label for="priority-high">High Priority</label>
+												</div>
+
+												<!-- Break -->
+												<div class="12u$">
+													<textarea name="message" id="message" placeholder="Enter your message" rows="6"></textarea>
+												</div>
+												<!-- Break -->
+												<div class="12u$">
+													<ul class="actions">
+														<li><input type="submit" value="Create Production Order" /></li>
+														<li><input type="reset" value="Reset" class="alt" /></li>
+													</ul>
+												</div>
+											</div>
+										</form>
+
 
 								</div>
 							</div>
-						</div> <!-- End of first box -->
-
-						<div>
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic03.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>Production planning</p>
-										<h2>Planning</h2>
-									</header>
-									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
-									<footer class="align-center">
-										<a href="planning.php" class="button alt">Planning</a>
-									</footer>
-								</div>
-							</div>
-						</div>
-
-            <div> <!-- Third box, starts a new row in grid depending on window size -->
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic02.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>Import XML file</p>
-										<h2>XML</h2>
-									</header>
-									<p>Import XML structure files to make PLM parts available for production</p>
-									<footer class="align-center">
-										<a href="selectXML.php" class="button alt">Import XML</a>
-									</footer>
-								</div>
-							</div>
-						</div> <!-- End of third box : import XML -->
-
-            <div> <!-- Fourth box in grid : database setup -->
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic02.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>Database setup and check</p>
-										<h2>Database</h2>
-									</header>
-									<p>Database Administration.</p>
-									<p><a href="scripts/database_setup.php">Table</a> setup script</p>
-									<p><a href="../phpMyAdmin-5.1.0-all-languages/index.php">phpMyAdmin</a></p>
-
-								</div>
-							</div>
-						</div> <!-- End of fourth box -->
-
-
+						</div> <!-- end class "content"-->
 					</div>
 				</div>
+
+
+
 			</section>
 
 		<!-- Footer -->
