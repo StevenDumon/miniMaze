@@ -47,7 +47,7 @@
 										<h3>Part</h3>
 										<p>New production order uses one part as root, the complete part structure is included in the production order</p>
 										<form autocomplete="off" action="part_details.php" method="get" enctype="multipart/form-data">
-					            <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
+					            <p><input type="text" id="productionOrderRootPart" name="productionOrderRootPart" placeholder="Part number"></p>
 					          </form>
 
 
@@ -79,7 +79,7 @@
 							      		} // end if num_rows > 0
 												// end adding parts to textfield autocomplete
 											?>
-							      	autocomplete(document.getElementById("partNumber"), parts, 100);
+							      	autocomplete(document.getElementById("productionOrderRootPart"), parts, 100);
 							      </script>
 
 										<div class="12u$">
@@ -123,7 +123,7 @@
 									<!-- Form -->
 										<h3>Info</h3>
 
-										<form method="post" action="#">
+										<form method="post" action="scripts/createProductionOrder.php" enctype="multipart/form-data">
 											<div class="row uniform">
 												<div class="6u 12u$(xsmall)">
 													<input type="text" name="name" id="name" value="" placeholder="Name" />
