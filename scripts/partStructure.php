@@ -15,17 +15,18 @@ function getChildren($conn, $partID, $partLevel){
       $quantity= $parentRow["Quantity"];
       $numChildren=$parentResult->num_rows;
       // Toevoegen aan tabel
-      writePartRow($conn,$childID, $quantity, $partLevel+1, $numChildren);
+      // writePartRow($conn,$childID, $quantity, $partLevel+1, $numChildren);
+      writePartRow($conn,$childID, $quantity, $partLevel+1);
       // eigen children opzoeken
       getChildren($conn, $childID, $partLevel+1);
     }
   }
 }
 
-function writePartRow($conn, $partID, $quantity, $partLevel, $numChildren) {
+function writePartRow($conn, $partID, $quantity, $partLevel) {
   $query = "SELECT Number, Version, Name FROM XML_demo.Parts WHERE PartID='$partID'";
   $result = $conn->query($query);
-  //echo "writePartRow(". $partID . ")<br>";
+  // echo "writePartRow(". $partID . ")<br>";
   if ($result->num_rows > 0){
     $row = $result->fetch_assoc();
     $partNumber= $row["Number"];
@@ -37,7 +38,7 @@ function writePartRow($conn, $partID, $quantity, $partLevel, $numChildren) {
     // partlevel defines spacing before part number
     echo "<td style='padding-left:" . $levelMargin ."'>";
     // partlevel defines spacing before part number
-    echo "$partNumber</td><td><a href='part_details.php?partNumber=" . $partNumber ."&partVersion=".$partVersion."'>$partVersion</a></td><td>$partName</td><td>$quantity</td></tr>";
+    echo "<a href='part_details.php?partNumber=" . $partNumber ."&partVersion=".$partVersion."'>$partNumber</a></td><td>$partName</td><td>$quantity</td></tr>";
   }
 }
 

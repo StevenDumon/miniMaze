@@ -39,7 +39,7 @@
 								</div> -->
 								<div class="content">
 									<header class="align-center">
-										<p>View part information</p>
+										<p>Investigate things</p>
 										<h2>Parts</h2>
 									</header>
 									<p>
