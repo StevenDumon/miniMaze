@@ -1,116 +1,152 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Start new production order</title>
+		<title>miniMaze</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+    <?php include("scripts/menu.php"); ?>
 		<?php
-			include("scripts/menu.php");
-      include("scripts/database_connection.php");
-      //include("scripts/partStructure.php");
-      $conn = new mysqli($servername, $username, $password, $dbname);
-      $startDate=$_GET["startDate"];
-      //$partVersion=$_GET["partVersion"];
-    ?>
-
-		<script language="Javascript">
-			function updateEndDate() {
-				var startDateInput = document.getElementById("startDate");
-				var startDateValue = startDateInput.value;
-				var endDateInput = document.getElementById("endDate");
-				// Create new Date instance
-				var date = new Date();
-				// Add a day
-				date.setDate(date.getDate() + 1);
-				//endDate.value=startDateValue;
-				document.getElementById("endDate").valueAsDate = date;
-
-			} // einde function updateLijst
-		</script>
+			include("scripts/database_connection.php");
+			$conn = new mysqli($servername, $username, $password, $dbname);
+		?>
 
 	</head>
 	<body class="subpage">
 
 		<!-- Header -->
 			<header id="header">
-				<div class="logo"><!--<a href="index.html">-->Production planning <!--<span>by TEMPLATED</span></a> --></div>
+				<div class="logo"><!--<a href="index.php">Hielo <span>by TEMPLATED</span></a>-->miniMaze</div>
 				<a href="#menu">Menu</a>
 			</header>
 
-			<?php writeMenu(); ?>
+    <?php writeMenu(); ?>
 
 		<!-- One -->
-			<!--<section id="One" class="wrapper style3">
+			<section id="one" class="wrapper style2">
 				<div class="inner">
-					<header class="align-center">
-						<p>Eleifend vitae urna</p>
-						<h2>Generic Page Template</h2>
-					</header>
-				</div>
-			</section>->
+					<div class="grid-style">
 
-			<!-- Two -->
-			<section id="two" class="wrapper style2">
-				<div class="inner">
-					<div class="box">
-						<div class="content">
-							<!--<header class="align-center">
-								<p>maecenas sapien feugiat ex purus</p>
-								<h2>Lorem ipsum dolor</h2>
-							</header>-->
+						<div> <!-- First box in grid -->
+							<div class="box">
+								<!-- <div class="image fit">
+									<img src="images/pic02.jpg" alt="" />
+								</div> -->
+								<div class="content">
+									<header class="align-center">
+										<p>View part information</p>
+										<h2>Parts</h2>
+									</header>
+									<p>
+										Explore part information, part structures and history.
+										<!--<br><a href="selectPart_autocomplete.html">Part selector</a> autocomplete.-->
+										<?php
+											$query = "SELECT DISTINCT Number FROM XML_demo.Parts WHERE Number LIKE '%32895%'";
+											$query = "SELECT DISTINCT Number FROM XML_demo.Parts";
+											$result = $conn->query($query);
+											// echo "<br>Option list contains " . $result->num_rows . " autocomplete options.";
+										?>
+									</p>
 
-							<form method="post" action="#">
-								<div class="row uniform">
+									<!--Make sure the form has the autocomplete function switched off:-->
+									<form autocomplete="off" action="part_details.php" method="get" enctype="multipart/form-data">
+				            <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
+										<footer class="align-center">
+											<input type="submit" value="Search" class="button alt">
+										</footer>
+				          </form>
 
-									<?php
-									  // Count the number of machines
-										$query = "SELECT MachineID FROM XML_demo.Machines";
-										$result = $conn->query($query);
-										$numMachines = $result->num_rows;
 
-										//Distribute machines in three columns
-										$query = "SELECT MachineID, Description FROM XML_demo.Machines";
-										$result = $conn->query($query);
-										if ($result->num_rows > 0){
-									    while($machine = $result->fetch_assoc()){
-												$machineID = $machine["MachineID"];
-									      $machineName = $machine["Description"];
+									<!-- Autocomplete -->
+						      <script src="scripts/autoComplete.js"></script>
+									<script>
+										<?php
 
-												echo("<div class='4u 12u$(small)'>");
-												echo("	<input type='checkbox' id='machine".$machineID."' name='machine".$machineID."' checked>");
-												echo("	<label for='machine".$machineID."'>".$machineName."</label>");;
-												echo("</div>");
-											}
-										}
-									?>
+											$query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
+							      	$result = $conn->query($query);
+											$numPart=0; // use counter to avoid printing comma before first result
+
+
+											if ($result->num_rows > 0){
+												// write array var declaration
+												echo 'var parts = [';
+												//echo '"option 1"';
+
+								        while($row = $result->fetch_assoc()){
+													$numPart++;
+								          $partNumber = $row["Number"];
+													if ($numPart!=1){echo ",";}
+								         	echo '"' . $partNumber . '"';
+								        } // end loop all results
+
+												// write array variable closing
+												// echo ', "option 4"';
+												echo "];";
+						      		} // end if num_rows > 0
+											// end adding parts to textfield autocomplete
+										?>
+						      	autocomplete(document.getElementById("partNumber"), parts, 100);
+						      </script>
 
 								</div>
-							</form>
-						</div>  <!-- End of class content -->
-					</div>  <!-- End of class box -->
+							</div>
+						</div> <!-- End of first box -->
 
-					<div class="box">
-						<div class="content">
-							<!--<header class="align-center">
-								<p>maecenas sapien feugiat ex purus</p>
-								<h2>Lorem ipsum dolor</h2>
-							</header>-->
-
-
-							<?php
-								$query = "SELECT ActionID FROM XML_demo.Actions";
-								$result = $conn->query($query);
-								$numActions = $result->num_rows;
-
-								echo("<p>");
-								echo($numActions." actions in total."."<br>");
-								if($startDate==null){
-									echo("Geen start datum opgegeven.");
-								}
-								echo("</p>");
-							?>
+						<div>
+							<div class="box">
+								<!-- <div class="image fit">
+									<img src="images/pic03.jpg" alt="" />
+								</div> -->
+								<div class="content">
+									<header class="align-center">
+										<p>Production planning</p>
+										<h2>Planning</h2>
+									</header>
+									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
+									<footer class="align-center">
+										<a href="planning.php" class="button alt">Planning</a>
+									</footer>
+								</div>
+							</div>
 						</div>
+
+            <div> <!-- Third box, starts a new row in grid depending on window size -->
+							<div class="box">
+								<!-- <div class="image fit">
+									<img src="images/pic02.jpg" alt="" />
+								</div> -->
+								<div class="content">
+									<header class="align-center">
+										<p>Import XML file</p>
+										<h2>XML</h2>
+									</header>
+									<p>Import XML structure files to make PLM parts available for production</p>
+									<footer class="align-center">
+										<a href="selectXML.php" class="button alt">Import XML</a>
+									</footer>
+								</div>
+							</div>
+						</div> <!-- End of third box : import XML -->
+
+            <div> <!-- Fourth box in grid : database setup -->
+							<div class="box">
+								<!-- <div class="image fit">
+									<img src="images/pic02.jpg" alt="" />
+								</div> -->
+								<div class="content">
+									<header class="align-center">
+										<p>Database setup and check</p>
+										<h2>Database</h2>
+									</header>
+									<p>Database Administration.</p>
+									<p><a href="scripts/database_setup.php">Table</a> setup script</p>
+									<p><a href="../phpMyAdmin-5.1.0-all-languages/index.php">phpMyAdmin</a></p>
+
+								</div>
+							</div>
+						</div> <!-- End of fourth box -->
+
+
 					</div>
 				</div>
 			</section>

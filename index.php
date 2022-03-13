@@ -97,6 +97,83 @@
 							</div>
 						</div> <!-- End of first box -->
 
+
+
+
+
+
+
+
+
+
+
+
+
+						<div> <!-- First box in grid -->
+							<div class="box">
+								<!-- <div class="image fit">
+									<img src="images/pic02.jpg" alt="" />
+								</div> -->
+								<div class="content">
+									<header class="align-center">
+										<p>Look at things</p>
+										<h2>Parts</h2>
+									</header>
+									<p>
+										Explore part information, part structures and history.
+										<!--<br><a href="selectPart_autocomplete.html">Part selector</a> autocomplete.-->
+										<?php
+											$query = "SELECT DISTINCT Number FROM XML_demo.Parts WHERE Number LIKE '%32895%'";
+											$query = "SELECT DISTINCT Number FROM XML_demo.Parts";
+											$result = $conn->query($query);
+											// echo "<br>Option list contains " . $result->num_rows . " autocomplete options.";
+										?>
+									</p>
+
+									<!--Make sure the form has the autocomplete function switched off:-->
+									<form autocomplete="off" action="part_details.php" method="get" enctype="multipart/form-data">
+				            <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
+										<footer class="align-center">
+											<input type="submit" value="Search" class="button alt">
+										</footer>
+				          </form>
+
+
+									<!-- Autocomplete -->
+						      <script src="scripts/autoComplete.js"></script>
+									<script>
+										<?php
+
+											$query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
+							      	$result = $conn->query($query);
+											$numPart=0; // use counter to avoid printing comma before first result
+
+
+											if ($result->num_rows > 0){
+												// write array var declaration
+												echo 'var parts = [';
+												//echo '"option 1"';
+
+								        while($row = $result->fetch_assoc()){
+													$numPart++;
+								          $partNumber = $row["Number"];
+													if ($numPart!=1){echo ",";}
+								         	echo '"' . $partNumber . '"';
+								        } // end loop all results
+
+												// write array variable closing
+												// echo ', "option 4"';
+												echo "];";
+						      		} // end if num_rows > 0
+											// end adding parts to textfield autocomplete
+										?>
+						      	autocomplete(document.getElementById("partNumber"), parts, 100);
+						      </script>
+
+								</div>
+							</div>
+						</div> <!-- End of first box -->
+
 						<div>
 							<div class="box">
 								<!-- <div class="image fit">
@@ -104,7 +181,43 @@
 								</div> -->
 								<div class="content">
 									<header class="align-center">
-										<p>Production planning</p>
+										<p>Start things</p>
+										<h2>Production orders</h2>
+									</header>
+									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
+									<footer class="align-center">
+										<a href="newProductionOrde.php" class="button alt">New Production Order</a>
+									</footer>
+								</div>
+							</div> <!-- end of class Box" -->
+						</div>
+
+						<div>
+							<div class="box">
+								<!-- <div class="image fit">
+									<img src="images/pic03.jpg" alt="" />
+								</div> -->
+								<div class="content">
+									<header class="align-center">
+										<p>Make things</p>
+										<h2>Machine dashboard</h2>
+									</header>
+									<p>Present parts to be built for particular workstations or machines.</p>
+									<footer class="align-center">
+										<a href="machineDashboard.php" class="button alt">My machine</a>
+									</footer>
+								</div>
+							</div> <!-- end of class Box" -->
+						</div>
+
+						<div>
+							<div class="box">
+								<!-- <div class="image fit">
+									<img src="images/pic03.jpg" alt="" />
+								</div> -->
+								<div class="content">
+									<header class="align-center">
+										<p>Schedule work</p>
 										<h2>Planning</h2>
 									</header>
 									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
@@ -112,7 +225,7 @@
 										<a href="planning.php" class="button alt">Planning</a>
 									</footer>
 								</div>
-							</div>
+							</div> <!-- end of class Box" -->
 						</div>
 
             <div> <!-- Third box, starts a new row in grid depending on window size -->
@@ -122,8 +235,8 @@
 								</div> -->
 								<div class="content">
 									<header class="align-center">
-										<p>Import XML file</p>
-										<h2>XML</h2>
+										<p>Import things</p>
+										<h2>Import XML</h2>
 									</header>
 									<p>Import XML structure files to make PLM parts available for production</p>
 									<footer class="align-center">
