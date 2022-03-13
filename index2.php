@@ -26,9 +26,6 @@
 
 						<div> <!-- First box in grid -->
 							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic02.jpg" alt="" />
-								</div> -->
 								<div class="content">
 									<header class="align-center">
 										<p>View part information</p>
@@ -38,6 +35,7 @@
 										Explore part information, part structures and history.
 										<?php
 											$query = "SELECT DISTINCT Number FROM XML_demo.Parts";
+											$query = "SELECT DISTINCT Number FROM XML_demo.Parts WHERE Number LIKE '32895%'";
 											$result = $conn->query($query);
 											echo "<br>Option list contains " . $result->num_rows . " autocomplete options.";
 										?>
