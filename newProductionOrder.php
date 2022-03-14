@@ -46,113 +46,56 @@
 									<!-- Text stuff -->
 										<h3>Part</h3>
 										<p>New production order uses one part as root, the complete part structure is included in the production order</p>
-										<form autocomplete="off" action="part_details.php" method="get" enctype="multipart/form-data">
+
+										<form autocomplete="off" method="post" action="scripts/createProductionOrder.php" enctype="multipart/form-data">
 					            <p><input type="text" id="productionOrderRootPart" name="productionOrderRootPart" placeholder="Part number"></p>
-					          </form>
 
+											<!-- Autocomplete -->
+							      	<script src="scripts/autoComplete.js"></script>
+											<script>
+												<?php
 
-										<!-- Autocomplete -->
-							      <script src="scripts/autoComplete.js"></script>
-										<script>
-											<?php
+													$query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
+								      		$result = $conn->query($query);
+													$numPart=0; // use counter to avoid printing comma before first result
 
-												$query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
-								      	$result = $conn->query($query);
-												$numPart=0; // use counter to avoid printing comma before first result
+													if ($result->num_rows > 0){
+														// write array var declaration
+														echo 'var parts = [';
 
+									        	while($row = $result->fetch_assoc()){
+															$numPart++;
+									          	$partNumber = $row["Number"];
+															if ($numPart!=1){echo ",";}
+									         		echo '"' . $partNumber . '"';
+									        	} // end loop all results
 
-												if ($result->num_rows > 0){
-													// write array var declaration
-													echo 'var parts = [';
-													//echo '"option 1"';
+														// write array variable closing
+														echo "];";
+							      			} // end if num_rows > 0
+													// end adding parts to textfield autocomplete
+												?>
+							      		autocomplete(document.getElementById("productionOrderRootPart"), parts, 100);
+							      	</script>
 
-									        while($row = $result->fetch_assoc()){
-														$numPart++;
-									          $partNumber = $row["Number"];
-														if ($numPart!=1){echo ",";}
-									         	echo '"' . $partNumber . '"';
-									        } // end loop all results
+											<!--<div class="12u$">
+												<textarea name="description" id="description" placeholder="Description" rows="1"></textarea>
+											</div>-->
 
-													// write array variable closing
-													// echo ', "option 4"';
-													echo "];";
-							      		} // end if num_rows > 0
-												// end adding parts to textfield autocomplete
-											?>
-							      	autocomplete(document.getElementById("productionOrderRootPart"), parts, 100);
-							      </script>
+											<hr \>
 
-										<div class="12u$">
-											<textarea name="description" id="description" placeholder="Description" rows="1"></textarea>
-										</div>
-
-										<hr \>
-
-										<h3>Planning</h3>
-										<form>
+											<h3>Planning</h3>
 					            <p></p>
 											<!-- Break -->
 											<div class="row uniform">
-											<div class="6u 12u$(xsmall)">
-												<p>Requested date</p>
-											</div>
-											<div class="6u$ 12u$(xsmall)">
-												<input type="date" id="requestedDateComplete" name="requestedDateComplete" placeholder="Date complete">
-											</div>
-										</div>
-											<div class="row uniform">
-											<div class="4u 12u$(small)">
-												<input type="radio" id="priority-low" name="priority">
-												<label for="priority-low">Low Priority</label>
-											</div>
-											<div class="4u 12u$(small)">
-												<input type="radio" id="priority-normal" name="priority" checked>
-												<label for="priority-normal">Normal Priority</label>
-											</div>
-											<div class="4u$ 12u$(small)">
-												<input type="radio" id="priority-high" name="priority">
-												<label for="priority-high">High Priority</label>
-											</div>
-										</div>
-
-					          </form>
-
-								</div>
-								<div class="6u$ 12u$(medium)">
-
-									<!-- Form -->
-										<h3>Info</h3>
-
-										<form method="post" action="scripts/createProductionOrder.php" enctype="multipart/form-data">
-											<div class="row uniform">
 												<div class="6u 12u$(xsmall)">
-													<input type="text" name="name" id="name" value="" placeholder="Name" />
+													<p>Requested date</p>
 												</div>
 												<div class="6u$ 12u$(xsmall)">
-													<input type="email" name="email" id="email" value="" placeholder="Email" />
+													<input type="date" id="requestedDateComplete" name="requestedDateComplete" placeholder="Date complete">
 												</div>
-												<div class="6u 12u$(xsmall)">
-													<select name="laskwaliteit" id="laskwaliteit">
-														<option value="">- Laskwaliteit -</option>
-														<option value="1">Manufacturing</option>
-														<option value="1">Shipping</option>
-														<option value="1">Administration</option>
-														<option value="1">Human Resources</option>
-													</select>
-												</div>
-												<div class="6u$ 12u$(xsmall)">
-													<div class="select-wrapper">
-														<select name="laskwaliteit" id="laskwaliteit">
-															<option value="">- Afwerkingsgraad -</option>
-															<option value="1">Manufacturing</option>
-															<option value="1">Shipping</option>
-															<option value="1">Administration</option>
-															<option value="1">Human Resources</option>
-														</select>
-													</div>
-												</div>
-
-												<!-- Break -->
+											</div>
+											<div class="row uniform">
 												<div class="4u 12u$(small)">
 													<input type="radio" id="priority-low" name="priority">
 													<label for="priority-low">Low Priority</label>
@@ -165,22 +108,49 @@
 													<input type="radio" id="priority-high" name="priority">
 													<label for="priority-high">High Priority</label>
 												</div>
+											</div>
 
-												<!-- Break -->
-												<div class="12u$">
-													<textarea name="message" id="message" placeholder="Enter your message" rows="6"></textarea>
-												</div>
-												<!-- Break -->
-												<div class="12u$">
-													<ul class="actions">
-														<li><input type="submit" value="Create Production Order" /></li>
-														<li><input type="reset" value="Reset" class="alt" /></li>
-													</ul>
+										</div>
+										<div class="6u$ 12u$(medium)">
+
+										<h3>Info</h3>
+
+										<div class="row uniform">
+											<div class="6u 12u$(xsmall)">
+												<select name="laskwaliteit" id="laskwaliteit">
+													<option value="">- Laskwaliteit -</option>
+													<option value="1">Manufacturing</option>
+													<option value="1">Shipping</option>
+													<option value="1">Administration</option>
+													<option value="1">Human Resources</option>
+												</select>
+											</div>
+											<div class="6u$ 12u$(xsmall)">
+												<div class="select-wrapper">
+													<select name="afwerkingsgraad" id="afwerkingsgraad">
+														<option value="">- Afwerkingsgraad -</option>
+														<option value="1">Manufacturing</option>
+														<option value="1">Shipping</option>
+														<option value="1">Administration</option>
+														<option value="1">Human Resources</option>
+													</select>
 												</div>
 											</div>
-										</form>
 
+											<!-- Break -->
+											<div class="12u$">
+												<textarea name="message" id="message" placeholder="Enter your message" rows="6"></textarea>
+											</div>
 
+											<!-- Break -->
+											<div class="12u$">
+												<ul class="actions">
+													<li><input type="submit" value="Create Production Order" /></li>
+													<li><input type="reset" value="Reset" class="alt" /></li>
+												</ul>
+											</div>
+										</div>
+									</form>
 								</div>
 							</div>
 						</div> <!-- end class "content"-->

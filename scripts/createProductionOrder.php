@@ -5,7 +5,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="../assets/css/main.css" />
-    <!--<?php include("menu.php"); ?>-->
+
 		<?php
 			include("scripts/database_connection.php");
 			$conn = new mysqli($servername, $username, $password, $dbname);
@@ -17,43 +17,44 @@
 				$productionOrderRootPart = $_POST["productionOrderRootPart"];
 			} else {$productionOrderRootPart="not specified";}
 
+			//Production order laskwaliteit
+			if( $_POST["laskwaliteit"]) {
+				$laskwaliteit = $_POST["laskwaliteit"];
+			} else {$laskwaliteit="not specified";}
+
+			//Production order afwerkingsgraad
+			if( $_POST["afwerkingsgraad"]) {
+				$afwerkingsgraad = $_POST["afwerkingsgraad"];
+			} else {$afwerkingsgraad="not specified";}
+
 			// message
-			$message = $_POST["message"]);
 			if( $_POST["message"]) {
-				$message = $_POST["message"]);
-				$message="found ?";
-			} else {
-				$message="not specified";
-			}
+				$message = $_POST["message"];
+			} else {$message="not specified";}
 
+			// Requested Date
+			if( $_POST["requestedDateComplete"]) {
+				$message = $_POST["requestedDateComplete"];
+			} else {$message="not specified";}
 
-   		if( $_POST["name"] || $_POST["age"] ) {
-      	if (preg_match("/[^A-Za-z'-]/",$_POST['name'] )) {
-         	die ("invalid name and name should be alpha");
-      	}
-      	echo "Welcome ". $_POST['name']. "<br />";
-      	echo "You are ". $_POST['age']. " years old.";
-
-      	exit();
-   		}
 			?>
 
 	</head>
 	<body class="subpage">
 
 		<!-- Header -->
-			<header id="header">
-				<div class="logo"><!--<a href="index.php">Hielo <span>by TEMPLATED</span></a>-->miniMaze - Create New Production Order</div>
-				<!--<a href="#menu">Menu</a>-->
-			</header>
-
-    <?php //writeMenu(); ?>
+		<header id="header">
+			<div class="logo"><!--<a href="index.php">Hielo <span>by TEMPLATED</span></a>-->miniMaze - Create New Production Order</div>
+		</header>
 
 		<div class="inner">
 			<div class="box">
 				<div class="content">
-					<p>Production Order Root Part : <?php echo $productionOrderRootPart; ?>
-					<p>Message : <?php echo $message; ?>
+					<p>Production Order Root Part : <?php echo $productionOrderRootPart; ?></p>
+					<p>Test input : <?php echo $testInput; ?></p>
+					<p>Date : <?php echo $requestedDateComplete; ?></p>
+					<p>Laskwaliteit : <?php echo $laskwaliteit; ?></p>
+					<p>Afwerkingsgraad : <?php echo $afwerkingsgraad; ?></p>
 				</div> <!-- end class "content"-->
 			</div>
 		</div>
