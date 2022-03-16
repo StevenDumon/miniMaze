@@ -11,6 +11,35 @@
 			$conn = new mysqli($servername, $username, $password, $dbname);
 		?>
 
+		<script language="Javascript">
+		function validateForm() {
+		  if (document.getElementById("productionOrderRootPart").value == "") {
+		    alert("Part not specified");
+				document.getElementById("productionOrderRootPart").focus();
+		    return false;
+		  }
+			if (document.getElementById("startDate").value == "") {
+		    alert("Production order start date not specified");
+				document.getElementById("startDate").focus();
+		    return false;
+		  }
+		  if (document.getElementById("requestedDateComplete").value == "") {
+		    alert("Requested completion date not specified");
+				document.getElementById("requestedDateComplete").focus();
+		    return false;
+		  }
+			if (document.getElementById("laskwaliteit").value == "") {
+		    alert("Laskwaliteit not specified");
+				document.getElementById("laskwaliteit").focus();
+		    return false;
+		  }
+			if (document.getElementById("afwerkingsgraad").value == "") {
+		    alert("Afwerkingsgraad not specified");
+				document.getElementById("afwerkingsgraad").focus();
+		    return false;
+		  }
+		}
+		</script>
 	</head>
 	<body class="subpage">
 
@@ -38,16 +67,20 @@
 							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras at dignissim augue, in iaculis neque. Etiam bibendum felis ac vulputate pellentesque. Cras non blandit quam. Nunc porta, est non posuere sagittis, neque nunc pellentesque diam, a iaculis lacus urna vitae purus. In non dui vel est tempor faucibus. Aliquam erat volutpat. Quisque vel est vitae nibh laoreet auctor. In nec libero dui. Nulla ullamcorper, dolor nec accumsan viverra, libero eros rutrum metus, vel lacinia magna odio non nunc. Praesent semper felis eu rhoncus aliquam. Donec at quam ac libero vestibulum pretium. Nunc faucibus vel arcu in malesuada. Aenean at velit odio. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas commodo erat eget molestie sollicitudin. Donec imperdiet, ex sed blandit dictum, ipsum metus ultrices arcu, vitae euismod nisl sapien vitae tortor.</p>
 						-->
 
-
-
 							<div class="row 200%">
 								<div class="6u 12u$(medium)">
 
 									<!-- Text stuff -->
 										<h3>Part</h3>
 										<p>New production order uses one part as root, the complete part structure is included in the production order</p>
+										<p>Initial setup : use only ...-P000... parts</p>
 
-										<form autocomplete="off" method="post" action="scripts/createProductionOrder.php" enctype="multipart/form-data">
+										<form name = "createProductionOrderForm"
+										      autocomplete="off"
+										      method="post"
+													action="scripts/createProductionOrder.php"
+													onsubmit="return validateForm()"
+													enctype="multipart/form-data">
 					            <p><input type="text" id="productionOrderRootPart" name="productionOrderRootPart" placeholder="Part number"></p>
 
 											<!-- Autocomplete -->
@@ -55,7 +88,7 @@
 											<script>
 												<?php
 
-													$query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
+													$query = "SELECT DISTINCT Number FROM XML_demo.Parts WHERE Number LIKE '%-P00%' ORDER BY Number";
 								      		$result = $conn->query($query);
 													$numPart=0; // use counter to avoid printing comma before first result
 
@@ -89,10 +122,16 @@
 											<!-- Break -->
 											<div class="row uniform">
 												<div class="6u 12u$(xsmall)">
+													<p>Start date</p>
+												</div>
+												<div class="6u$ 12u$(xsmall)">
+													<input type="date" id="startDate" name="startDate" value="<?php echo date('Y-m-d');?>"  />
+												</div>
+												<div class="6u 12u$(xsmall)">
 													<p>Requested date</p>
 												</div>
 												<div class="6u$ 12u$(xsmall)">
-													<input type="date" id="requestedDateComplete" name="requestedDateComplete" placeholder="Date complete">
+													<input type="date" id="requestedDateComplete" name="requestedDateComplete" placeholder="dd-mm-yyyy" />
 												</div>
 											</div>
 											<div class="row uniform">
@@ -119,20 +158,18 @@
 											<div class="6u 12u$(xsmall)">
 												<select name="laskwaliteit" id="laskwaliteit">
 													<option value="">- Laskwaliteit -</option>
-													<option value="1">Manufacturing</option>
-													<option value="1">Shipping</option>
-													<option value="1">Administration</option>
-													<option value="1">Human Resources</option>
+													<option value="A">A</option>
+													<option value="B">B</option>
+													<option value="C">C</option>
 												</select>
 											</div>
 											<div class="6u$ 12u$(xsmall)">
 												<div class="select-wrapper">
 													<select name="afwerkingsgraad" id="afwerkingsgraad">
 														<option value="">- Afwerkingsgraad -</option>
-														<option value="1">Manufacturing</option>
-														<option value="1">Shipping</option>
-														<option value="1">Administration</option>
-														<option value="1">Human Resources</option>
+														<option value="P1">P1</option>
+														<option value="P2">P2</option>
+														<option value="P3">P3</option>
 													</select>
 												</div>
 											</div>

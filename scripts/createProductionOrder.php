@@ -34,8 +34,9 @@
 
 			// Requested Date
 			if( $_POST["requestedDateComplete"]) {
-				$message = $_POST["requestedDateComplete"];
-			} else {$message="not specified";}
+				// $requestedDateComplete = $_POST["requestedDateComplete"];
+				$requestedDateComplete = date('Y-m-d', strtotime($_POST['requestedDateComplete']));
+			} else {$requestedDateComplete="not specified";}
 
 			?>
 
@@ -51,7 +52,6 @@
 			<div class="box">
 				<div class="content">
 					<p>Production Order Root Part : <?php echo $productionOrderRootPart; ?></p>
-					<p>Test input : <?php echo $testInput; ?></p>
 					<p>Date : <?php echo $requestedDateComplete; ?></p>
 					<p>Laskwaliteit : <?php echo $laskwaliteit; ?></p>
 					<p>Afwerkingsgraad : <?php echo $afwerkingsgraad; ?></p>
