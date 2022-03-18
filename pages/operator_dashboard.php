@@ -4,10 +4,10 @@
 		<title>Operator Dashboard</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
 		<?php
-			include("scripts/menu.php");
-      include("scripts/database_connection.php");
+			include("../scripts/menu.php");
+      include("../scripts/database_connection.php");
       //include("scripts/partStructure.php");
       $conn = new mysqli($servername, $username, $password, $dbname);
     ?>

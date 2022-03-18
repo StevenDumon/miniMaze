@@ -18,11 +18,6 @@
 				document.getElementById("productionOrderRootPart").focus();
 		    return false;
 		  }
-			if (document.getElementById("startDate").value == "") {
-		    alert("Production order start date not specified");
-				document.getElementById("startDate").focus();
-		    return false;
-		  }
 		  if (document.getElementById("requestedDateComplete").value == "") {
 		    alert("Requested completion date not specified");
 				document.getElementById("requestedDateComplete").focus();
@@ -122,13 +117,7 @@
 											<!-- Break -->
 											<div class="row uniform">
 												<div class="6u 12u$(xsmall)">
-													<p>Start date</p>
-												</div>
-												<div class="6u$ 12u$(xsmall)">
-													<input type="date" id="startDate" name="startDate" value="<?php echo date('Y-m-d');?>"  />
-												</div>
-												<div class="6u 12u$(xsmall)">
-													<p>Requested date</p>
+													<p>Requested date completed</p>
 												</div>
 												<div class="6u$ 12u$(xsmall)">
 													<input type="date" id="requestedDateComplete" name="requestedDateComplete" placeholder="dd-mm-yyyy" />
@@ -136,15 +125,15 @@
 											</div>
 											<div class="row uniform">
 												<div class="4u 12u$(small)">
-													<input type="radio" id="priority-low" name="priority">
+													<input type="radio" id="priority-low" name="priority" value="low">
 													<label for="priority-low">Low Priority</label>
 												</div>
 												<div class="4u 12u$(small)">
-													<input type="radio" id="priority-normal" name="priority" checked>
+													<input type="radio" id="priority-normal" name="priority" value="normal" checked>
 													<label for="priority-normal">Normal Priority</label>
 												</div>
 												<div class="4u$ 12u$(small)">
-													<input type="radio" id="priority-high" name="priority">
+													<input type="radio" id="priority-high" name="priority" value="high">
 													<label for="priority-high">High Priority</label>
 												</div>
 											</div>
