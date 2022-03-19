@@ -30,7 +30,7 @@
 			// message
 			if( $_POST["message"]) {
 				$message = $_POST["message"];
-			} else {$message="not specified";}
+			} else {$message="";}
 
 			// Requested Date
 			if( $_POST["requestedDateComplete"]) {
@@ -55,48 +55,60 @@
 		<div class="inner">
 			<div class="box">
 				<div class="content">
-					<ul>
-						<li>Production Order Root Part : <?php echo $productionOrderRootPart; ?></li>
-						<li>Date : <?php echo $requestedDateComplete; ?></li>
-						<li>Laskwaliteit : <?php echo $laskwaliteit; ?></li>
-						<li>Afwerkingsgraad : <?php echo $afwerkingsgraad; ?></li>
-						<li>Prioriteit : <?php echo $priority; ?></li>
-					</ul>
+					<div class="row uniform">
+						<div class="6u 12u$(xsmall)">
 
-					<?php
-						// Controleer of er al een roduction order is geregistreerd met het nummer
-						// waarvoor nu een production order zou moeten aangemaakt worden !
-						$productionOrderExists=false;
+							<ul>
+								<li>Production Order Root Part : <?php echo $productionOrderRootPart; ?></li>
+								<li>Requested date : <?php echo $requestedDateComplete; ?></li>
+								<li>Laskwaliteit : <?php echo $laskwaliteit; ?></li>
+								<li>Afwerkingsgraad : <?php echo $afwerkingsgraad; ?></li>
+								<li>Prioriteit : <?php echo $priority; ?></li>
+							</ul>
 
-						$query = "SELECT PartNumber FROM XML_demo.ProductionOrders WHERE PartNumber LIKE '" . $productionOrderRootPart . "'";
-						$result = $conn->query($query);
+							<?php
+								// Controleer of er al een roduction order is geregistreerd met het nummer
+								// waarvoor nu een production order zou moeten aangemaakt worden !
+								$productionOrderExists=false;
 
-						echo "Bestaande productie order voor hetzelfde part number : " . "<br>";
-						echo "Query : " . $query . "<br>";
-						echo "Results : " . $result->num_rows . "<br>";
+								$query = "SELECT PartNumber FROM XML_demo.ProductionOrders WHERE PartNumber LIKE '" . $productionOrderRootPart . "'";
+								$result = $conn->query($query);
 
-						if ($result->num_rows > 0){
-							echo "Er is reeds een producie order geregistreerd voor " . $productionOrderRootPart . "<br>";
-							$productionOrderExists=true;
-						} // end if num_rows > 0
-					?>
+								if ($result->num_rows > 0){
+									echo "Bestaande productie order voor hetzelfde part number : ";
+									// echo "Query : " . $query . "<br>";
+									// echo "Results : " . $result->num_rows . "<br>";
+									echo "<div class='button'>". $productionOrderRootPart . "</div><br>";
+									// echo "Er is reeds een producie order geregistreerd voor " . $productionOrderRootPart . "<br>";
+									$productionOrderExists=true;
+								} // end if num_rows > 0
+							?>
 
-					<?php
-						if ($productionOrderExists==false){
-							// Add production order to table with production orders
-							// Default value voor CreatedDate is ingesteld als CURRENT_TIMESTAMP
-							// Actual start date blijft nog open bij creatie production order.
+							<?php
+								if ($productionOrderExists==false){
+									// Add production order to table with production orders
+									// Default value voor CreatedDate is ingesteld als CURRENT_TIMESTAMP
+									// Actual start date blijft nog open bij creatie production order.
 
-							$query = "INSERT INTO XML_demo.ProductionOrders ("
-								."PartNumber, RequestedCompleteDate, Afwerkingsgraad, Laskwaliteit, Priority, Message"
-								.") VALUES ("
-								."'$productionOrderRootPart', '$requestedDateComplete', '$laskwaliteit', '$afwerkingsgraad', '$priority', '$message')";
+									$query = "INSERT INTO XML_demo.ProductionOrders ("
+										."PartNumber, RequestedCompleteDate, Afwerkingsgraad, Laskwaliteit, Priority, Message"
+										.") VALUES ("
+											."'$productionOrderRootPart', '$requestedDateComplete', '$laskwaliteit', '$afwerkingsgraad', '$priority', '$message')";
 
-							$result = $conn->query($query);
-							echo "Production order created : " . $result;
-						}
-					?>
-
+									$result = $conn->query($query);
+									echo "Production order created : " . $result;
+								} // end if production order nog niet bestaat
+							?>
+						</div>
+						<div class="6u$ 12u$(xsmall)">
+							<!--show 'back' button only if new production order was created -->
+							<?php
+								if ($productionOrderExists==false){
+									echo "<a href='javascript:history.back()' class='button'>Back</a>";
+								}
+							 ?>
+						</div>
+					</div> <!-- end of row uniform -->
 				</div> <!-- end class "content"-->
 			</div>
 		</div>

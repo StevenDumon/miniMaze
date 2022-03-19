@@ -47,7 +47,7 @@
 									</p>
 
 									<!--Make sure the form has the autocomplete function switched off:-->
-									<form autocomplete="off" action="part_details.php" method="get" enctype="multipart/form-data">
+									<form autocomplete="off" action="pages/part_details.php" method="get" enctype="multipart/form-data">
 				            <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
 										<footer class="align-center">
 											<input type="submit" value="Search" class="button alt">
@@ -102,12 +102,53 @@
 										<h2>Production orders</h2>
 									</header>
 									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
-									<footer class="align-center">
-										<a href="newProductionOrder.php" class="button alt">New Production Order</a>
-									</footer>
+									<div class="row uniform">
+										<div class="8u 12u$(xsmall)">
+											<input type="text" id="productionOrderNumber" name="productionOrderNumber" placeholder="Production order number">
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<a href="pages/viewProductionOrder.php" class="button alt">Search</a>
+										</div>
+									</div> <!-- end of row uniform -->
+									<div class="row uniform">
+										<div class="4u 12u$(xsmall)">
+										</div>
+										<div class="4u 12u$(xsmall)">
+											<a href="newProductionOrder.php" class="button alt">New</a>
+										</div>
+										<div class="4u 12u$(xsmall)">
+										</div>
+									</div>
 								</div>
 							</div> <!-- end of class Box" -->
 						</div>
+						<script>
+							<?php
+
+								$query = "SELECT DISTINCT ProductionOrderID, PartNumber FROM XML_demo.ProductionOrders ORDER BY PartNumber";
+								$result = $conn->query($query);
+								$numPart=0; // use counter to avoid printing comma before first result
+
+								if ($result->num_rows > 0){
+									// write array var declaration
+									echo 'var productionOrderNumbers = [';
+									//echo '"option 1"';
+
+									while($row = $result->fetch_assoc()){
+										$numPart++;
+										$partNumber = $row["PartNumber"];
+										if ($numPart!=1){echo ",";}
+										echo '"' . $partNumber . '"';
+									} // end loop all results
+
+									// write array variable closing
+									// echo ', "option 4"';
+									echo "];";
+								} // end if num_rows > 0
+								// end adding parts to textfield autocomplete
+							?>
+							autocomplete(document.getElementById("productionOrderNumber"), productionOrderNumbers, 100);
+						</script>
 
 						<div>
 							<div class="box">

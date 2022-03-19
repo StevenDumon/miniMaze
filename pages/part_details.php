@@ -1,8 +1,8 @@
 <html>
 	<head>
 		<?php
-			include("scripts/database_connection.php");
-			include("scripts/partStructure.php");
+			include("../scripts/database_connection.php");
+			include("../scripts/partStructure.php");
 			$conn = new mysqli($servername, $username, $password, $dbname);
 			$partNumber=$_GET["partNumber"];
 			$partVersion=$_GET["partVersion"];
@@ -26,8 +26,8 @@
     </title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-    <?php include("scripts/menu.php"); ?>
+		<link rel="stylesheet" href="../assets/css/main.css" />
+    <?php include("../scripts/menu.php"); ?>
 	</head>
 	<body class="subpage">
 
@@ -43,10 +43,6 @@
 				<section id="one" class="wrapper style2">
 					<div class="inner">
 						<div class="grid-style">
-
-
-
-
 
 							<div> <!-- First box in grid -->
 								<div class="box">
