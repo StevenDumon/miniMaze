@@ -13,6 +13,7 @@ function writeMenu(){
   echo("      <li><a href='planning.php'>Planning</a></li>");
   echo("      <li><a href='generic.html'>Generic</a></li>");
   echo("      <li><a href='elements.html'>Elements</a></li>");
+  echo("      <li><a href='pages/statistics.php'>Statistics</a></li>");
   echo("    </ul>");
   echo("  </nav>");
 }

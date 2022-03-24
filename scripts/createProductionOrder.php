@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="../assets/css/main.css" />
 
 		<?php
+			include("partStructure.php");
 			include("database_connection.php");
 			$conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -90,13 +91,31 @@
 									// Default value voor CreatedDate is ingesteld als CURRENT_TIMESTAMP
 									// Actual start date blijft nog open bij creatie production order.
 
+									echo "Create production order." . "<br>";
 									$query = "INSERT INTO XML_demo.ProductionOrders ("
 										."PartNumber, RequestedCompleteDate, Afwerkingsgraad, Laskwaliteit, Priority, Message"
 										.") VALUES ("
 											."'$productionOrderRootPart', '$requestedDateComplete', '$laskwaliteit', '$afwerkingsgraad', '$priority', '$message')";
 
+									$result="test mode";
+									// $result = $conn->query($query);
+									echo "Production order created : " . $result . "<br>";
+
+									echo "Collect individual parts." . "<br>";
+									// search for latest version of the production order parts
+									$productionOrderRootPartID="";
+									$query = "SELECT PartID, Version FROM XML_demo.Parts WHERE Number='" . $productionOrderRootPart . "' ORDER BY Version";
+									//echo "Query for root part ID : " . $query . "<br>";
 									$result = $conn->query($query);
-									echo "Production order created : " . $result;
+
+									while($row = $result->fetch_assoc()){
+ 										$productionOrderRootPartID=$row["PartID"];
+									} // end if num_rows > 0
+									echo "Production order root part ID " . $productionOrderRootPartID . "<br>";
+
+									$subParts=getSubparts($conn, $productionOrderRootPartID);
+
+
 								} // end if production order nog niet bestaat
 							?>
 						</div>

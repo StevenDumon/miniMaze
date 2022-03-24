@@ -106,7 +106,7 @@
 										<div class="8u 12u$(xsmall)">
 											<input type="text" id="productionOrderNumber" name="productionOrderNumber" placeholder="Production order number">
 										</div>
-										<div class="4u 12u$(xsmall)">
+										<div class="3u 12u$(xsmall)">
 											<a href="pages/viewProductionOrder.php" class="button alt">Search</a>
 										</div>
 									</div> <!-- end of row uniform -->
@@ -118,9 +118,9 @@
 										</div>
 										<div class="4u 12u$(xsmall)">
 										</div>
-									</div>
-								</div>
-							</div> <!-- end of class Box" -->
+									</div> <!-- end of row uniform -->
+								</div> <!-- end of Content -->
+							</div> <!-- end of Box" -->
 						</div>
 						<script>
 							<?php

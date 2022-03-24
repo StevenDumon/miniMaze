@@ -42,4 +42,38 @@ function writePartRow($conn, $partID, $quantity, $partLevel) {
   }
 }
 
+function getSubparts($conn, $partID){
+  $subParts=array();
+
+  // start calling recirsuve function
+  echo "Searching for children of part ID " . $partID . "<br>";
+  $quantity = 1; // quantity of root part is always = 1
+  getSubpartsRecursive($conn, $partID, $quantity);
+
+  return $subParts;
+}
+
+function getSubpartsRecursive($conn, $partID, $parentQuantity){
+  // function to recursively collect all parts of a root part
+  // to be used to collect all parts required to launch a production order.
+  // To add element at the end of the array in php : $array[] = $var;
+
+  $query = "SELECT ChildID, Quantity FROM XML_demo.PartUsage WHERE ParentID='$partID'";
+  $result = $conn->query($query);
+
+
+  if ($result->num_rows > 0){
+    while($row = $result->fetch_assoc()){
+      $childID = $row["ChildID"];
+      $quantity= $row["Quantity"];
+      echo "Part " . $partID . ", # children : " . $result->num_rows . ", quantity : " . $quantity . "<br>";
+
+      // Toevoegen aan array
+      $subParts[]=childID;
+      // eigen children opzoeken
+      getSubpartsRecursive($conn, $childID, $quantity);
+    }
+  }
+}
+
 ?>
