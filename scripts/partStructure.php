@@ -46,34 +46,64 @@ function getSubparts($conn, $partID){
   $subParts=array();
 
   // start calling recirsuve function
-  echo "Searching for children of part ID " . $partID . "<br>";
+  // echo "Searching for children of part ID " . $partID . "<br>";
   $quantity = 1; // quantity of root part is always = 1
-  getSubpartsRecursive($conn, $partID, $quantity);
+  $whereUsed = "";
+  $query = "SELECT Number FROM XML_demo.Parts WHERE PartID='$partID'";
+  $result = $conn->query($query);
+
+  if ($result->num_rows > 0){
+    while($row = $result->fetch_assoc()){
+      $whereUsed= $row["Number"];
+      // echo "Part whereUsed starts with " . $whereUsed . "<br>";
+    }
+  }
+  getSubpartsRecursive($conn, $partID, $quantity, $whereUsed, $subParts);
+
+  echo "<br>";
+  // echo "Returning " . count($subParts) . " items." . "<br>";
 
   return $subParts;
 }
 
-function getSubpartsRecursive($conn, $partID, $parentQuantity){
+function getSubpartsRecursive($conn, $partID, $parentQuantity, $whereUsed, &$subParts){
   // function to recursively collect all parts of a root part
   // to be used to collect all parts required to launch a production order.
   // To add element at the end of the array in php : $array[] = $var;
+  //
+  // The main thing when populating an array recursively is to pass the result array by reference.
+  // If you don't you are just passing a copy of the array to the next level and the copy is lost when the function returns.
 
-  $query = "SELECT ChildID, Quantity FROM XML_demo.PartUsage WHERE ParentID='$partID'";
+  // $query = "SELECT ChildID, Quantity FROM XML_demo.PartUsage WHERE ParentID='$partID'";
+  $query = "SELECT p.Number, p.Name, p.version, "
+         . "p.Operation_1, p.Operation_2, p.Operation_3, p.Operation_4, p.Operation_5,"
+         . "u.ChildID, u.Quantity FROM XML_demo.PartUsage u "
+         . "INNER JOIN XML_demo.Parts p "
+         . "ON u.ChildID = p.PartID "
+         . "WHERE u.ParentID='$partID'";
   $result = $conn->query($query);
 
 
   if ($result->num_rows > 0){
     while($row = $result->fetch_assoc()){
       $childID = $row["ChildID"];
+      //$childName = $row["Name"];
+      $childNumber = $row["Number"];
       $quantity= $row["Quantity"];
-      echo "Part " . $partID . ", # children : " . $result->num_rows . ", quantity : " . $quantity . "<br>";
+      $operation_1= $row["Operation_1"];
+      $operation_2= $row["Operation_2"];
+      $operation_3= $row["Operation_3"];
+      $operation_4= $row["Operation_4"];
+      $operation_5= $row["Operation_5"];
+      // echo "Parent part (id " . $partID . ") has " . $result->num_rows . " children, Child " . $childNumber . " quantity : " . $quantity . ". Where used " . $whereUsed . "<br>";
 
       // Toevoegen aan array
-      $subParts[]=childID;
+      $subParts[]=array($childID, $childNumber, $whereUsed, $quantity, $operation_1, $operation_2, $operation_3, $operation_4, $operation_5);
+      // echo "part list now contains " . count($subParts) . " items." . "<br>";
       // eigen children opzoeken
-      getSubpartsRecursive($conn, $childID, $quantity);
+      $childwhereUsed = $whereUsed . " - " . $childNumber;
+      getSubpartsRecursive($conn, $childID, $quantity, $childwhereUsed, $subParts);
     }
   }
 }
-
 ?>
