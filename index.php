@@ -32,11 +32,8 @@
 				<div class="inner">
 					<div class="grid-style">
 
-						<div> <!-- First box in grid -->
+						<div> <!-- First box in grid : Part details -->
 							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic02.jpg" alt="" />
-								</div> -->
 								<div class="content">
 									<header class="align-center">
 										<p>Investigate things</p>
@@ -87,21 +84,19 @@
 						      </script>
 
 								</div>
-							</div>
-						</div> <!-- End of first box -->
+								 <!-- End of class Content -->
+							</div> <!-- End of class Box -->
+						</div> <!-- End of first box in grid-->
 
-
-						<div>
+						<div> <!-- Production Orders -->
 							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic03.jpg" alt="" />
-								</div> -->
 								<div class="content">
 									<header class="align-center">
 										<p>Start things</p>
 										<h2>Production orders</h2>
 									</header>
-									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
+									<p>Production orderd make thing happen. For real.
+									<br>View existing production orders or create new ones here.</p>
 									<div class="row uniform">
 										<div class="8u 12u$(xsmall)">
 											<input type="text" id="productionOrderNumber" name="productionOrderNumber" placeholder="Production order number">
@@ -110,18 +105,61 @@
 											<a href="pages/viewProductionOrder.php" class="button alt">Search</a>
 										</div>
 									</div> <!-- end of row uniform -->
+
 									<div class="row uniform">
-										<div class="4u 12u$(xsmall)">
+										<div class="8u 12u$(xsmall)">
+											To start new production orders...
 										</div>
 										<div class="4u 12u$(xsmall)">
 											<a href="newProductionOrder.php" class="button alt">New</a>
 										</div>
-										<div class="4u 12u$(xsmall)">
+									</div> <!-- end of row uniform -->
+
+								</div> <!-- end of Content -->
+							</div> <!-- End of class Box -->
+						</div>  <!-- Production Orders -->
+
+						<div>  <!-- Machine dashboard -->
+							<div class="box">
+								<div class="content">
+									<header class="align-center">
+										<p>Make things</p>
+										<h2>Machine dashboard</h2>
+									</header>
+
+									<p>Display parts to be produces for machine :</p>
+
+									<div class="row uniform">
+										<div class="8u 12u$(xsmall)">
+											<input type="text" id="productionOrderNumber" name="productionOrderNumber" placeholder="Production order number">
+										</div>
+										<div class="3u 12u$(xsmall)">
+											<a href="pages/viewProductionOrder.php" class="button alt">Go</a>
 										</div>
 									</div> <!-- end of row uniform -->
+
 								</div> <!-- end of Content -->
-							</div> <!-- end of Box" -->
+							</div> <!-- End of class Box -->
 						</div>
+
+						<div> <!-- test box in grid  : check document structure -->
+							<div class="box">
+								<div class="content">
+									<!--<p>Test box</p>-->
+									<header class="align-center">
+										<p>Schedule work</p>
+										<h2>Planning</h2>
+									</header>
+									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
+									<footer class="align-center">
+										<a href="planning.php" class="button alt">Planning</a>
+									</footer>
+								</div> <!-- end of Content -->
+							</div> <!-- End of class Box -->
+						</div> <!-- End of test box in grid-->
+
+
+
 						<script>
 							<?php
 
@@ -150,85 +188,13 @@
 							autocomplete(document.getElementById("productionOrderNumber"), productionOrderNumbers, 100);
 						</script>
 
-						<div>
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic03.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>Make things</p>
-										<h2>Machine dashboard</h2>
-									</header>
-									<p>Present parts to be built for particular workstations or machines.</p>
-									<footer class="align-center">
-										<a href="machineDashboard.php" class="button alt">My machine</a>
-									</footer>
-								</div>
-							</div> <!-- end of class Box" -->
-						</div>
 
-						<div>
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic03.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>Schedule work</p>
-										<h2>Planning</h2>
-									</header>
-									<p>Use the planning tool to follow production orders, resources and machine usage.</p>
-									<footer class="align-center">
-										<a href="planning.php" class="button alt">Planning</a>
-									</footer>
-								</div>
-							</div> <!-- end of class Box" -->
-						</div>
-
-            <div> <!-- Third box, starts a new row in grid depending on window size -->
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic02.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>Import things</p>
-										<h2>Import XML</h2>
-									</header>
-									<p>Import XML structure files to make PLM parts available for production</p>
-									<footer class="align-center">
-										<a href="selectXML.php" class="button alt">Import XML</a>
-									</footer>
-								</div>
-							</div>
-						</div> <!-- End of third box : import XML -->
-
-            <div> <!-- Fourth box in grid : database setup -->
-							<div class="box">
-								<!-- <div class="image fit">
-									<img src="images/pic02.jpg" alt="" />
-								</div> -->
-								<div class="content">
-									<header class="align-center">
-										<p>Database setup and check</p>
-										<h2>Database</h2>
-									</header>
-									<p>Database Administration.</p>
-									<p><a href="scripts/database_setup.php">Table</a> setup script</p>
-									<p><a href="../phpMyAdmin-5.1.0-all-languages/index.php">phpMyAdmin</a></p>
-
-								</div>
-							</div>
-						</div> <!-- End of fourth box -->
-
-
-					</div>
-				</div>
-			</section>
+					</div> <!-- End of class Grid style -->
+				</div> <!-- End of class Inner -->
+			</section> <!-- End of section, class = wrapper style 2 -->
 
 		<!-- Footer -->
-			<footer id="footer">
+		<footer id="footer">
 				<div class="container">
 					<ul class="icons">
 						<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
@@ -243,11 +209,11 @@
 			</footer>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/skel.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/skel.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
 
 	</body>
 </html>

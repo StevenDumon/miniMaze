@@ -120,6 +120,7 @@
 
 							while($row = $result->fetch_assoc()){
 								$productionOrderRootPartID=$row["PartID"];
+								$projectnummer = substr($productionOrderRootPart, 0, 5);
 							} // end if num_rows > 0
 							// echo "Production order root part ID " . $productionOrderRootPartID . "<br>";
 
@@ -135,7 +136,16 @@
 								// e.g. stuk C03190856 heeft where used 32895-P00011 - 32895-021-300 - 32895-021-301
 								// Markering wordt C03190856	32895-P00011 - 32895-021-301 - C03190856
 
-								$marking="test";
+								$marking=$productionOrderRootPart;
+
+								// The strrpos() function finds the position of the last occurrence of a string inside another string.
+								// Note: The strrpos() function is case-sensitive. Related functions: strpos() - Finds the position of
+								// the first occurrence of a string inside another string (case-sensitive)
+								$lastProjectPos = strrpos($whereUsed, $projectnummer);
+								$marking = $marking . " " . substr($whereUsed, $lastProjectPos);
+								// Complete the part marking with the part number itself
+								$partNumber = $subPart[1];
+								$marking = $marking  . " " . $partNumber;
 								// Toevoegen aan array
 								$subPart[]=$marking;
 							}
@@ -143,7 +153,6 @@
 							//Stukken met dezelfde markering : quantities samentellen !
 							foreach ($subParts as &$subPart) {
 							}
-
 
 
 							// List array content

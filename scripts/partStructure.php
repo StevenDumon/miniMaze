@@ -97,7 +97,8 @@ function getSubpartsRecursive($conn, $partID, $parentQuantity, $whereUsed, &$sub
       $operation_5= $row["Operation_5"];
       // echo "Parent part (id " . $partID . ") has " . $result->num_rows . " children, Child " . $childNumber . " quantity : " . $quantity . ". Where used " . $whereUsed . "<br>";
 
-      // Toevoegen aan array
+      // Toevoegen aan array wanneer er effectief bewerkingen uit te voeren zijn.
+      // Beter alternatief : toevoegen aan array wanneer er geen verdere children zijn !
       $subParts[]=array($childID, $childNumber, $whereUsed, $quantity, $operation_1, $operation_2, $operation_3, $operation_4, $operation_5);
       // echo "part list now contains " . count($subParts) . " items." . "<br>";
       // eigen children opzoeken
