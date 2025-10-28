@@ -1,0 +1,23 @@
+Application server
+1. Install NginX web server : sudo apt-get install nginx
+   Start NginX with sudo service nginx start
+   Test that it's working (should see "Welcome to nginx!")
+   Stop NginX sudo service nginx stop
+
+2. Configuring NGINX for PHP
+   In your nginx site configuration, /etc/nginx/sites-available/default, modify the line in the server {} section (as root) :
+  index index.html index.htm to index index.php index.html index.htm
+  Uncomment the lines in the server {} section starting with
+  listen for ipv4 / ipv6 both
+  Scroll down to where it says "location ~ .php {" and uncomment lines so it looks like this:
+  location ~ \.php$ {
+	  fastcgi_split_path_info ^(.+\.php)(/.+)$;
+	  fastcgi_pass 127.0.0.1:9000;
+	  fastcgi_index index.php;
+	  include fastcgi_params;
+	}
+  
+  Reboot or restart services (check of versie php7.2 gebruikt is…) :
+  sudo service php7.2-fpm restart
+  sudo service nginx restart
+
