@@ -21,9 +21,40 @@ Application server
 	  include fastcgi_params;
 	}
  
-    Reboot or restart services (check of versie php7.2 gebruikt is…) :
+    Check status of nginx service : systemctl service nginx.services
+    Reboot or restart services (check php versie) :
       sudo service php8.3-fpm restart
       sudo service nginx restart
 
-    Check status of nginx service : systemctl service nginx.services
+Database server
+1. Install MySQL :
+	sudo apt install mysql-server
+   Test MySQL after installation
+	sudo mysql -u root -p
+	show databases;
+	show tables;
+	exit;
+   Check MySQL version :
+	mysql --version
+
+2. Add database user
+	sudo mysql -u root -p
+	CREATE USER 'Theseus'@'%' IDENTIFIED BY 'Theseus';
+	GRANT ALL PRIVILEGES ON *.* TO 'Theseus'@'%' WITH GRANT OPTION;
+   Vervang oude GRANT ALL PRIVILEGES ON *.* TO 'Theseus'@'%' IDENTIFIED BY 'password';
+   ...waarin % = wildcard
+   Check user :
+	SELECT user FROM mysql.user;
+
+3. Create database
+	CREATE DATABASE minimaze;
+   Allow remote access to database
+	check for bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf and comment line 127.0.0.1
+
+Create user with privileges other than localhost, % is wildcard :
+CREATE USER ‘testuser’@’%’ IDENTIFIED BY ‘password’;
+and grant privileges
+GRANT ALL PRIVILEGES ON *.* TO ‘testuser'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
+restart after modification of bind tables, …
+sudo service mysql restart
 
