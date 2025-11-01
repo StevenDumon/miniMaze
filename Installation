@@ -1,4 +1,7 @@
+==================
 Application server
+==================
+
 1. Install NginX web server : sudo apt-get install nginx
    Start NginX : sudo service nginx start
    Test that it's working (should see "Welcome to nginx!")
@@ -31,7 +34,10 @@ Application server
 	sudo chown -R <username> html
 
 
+===============
 Database server
+===============
+
 1. Install MySQL :
 	sudo apt install mysql-server
    Test MySQL after installation
@@ -69,14 +75,32 @@ Database server
 	USE minimaze;
 	INSERT INTO minimaze (testID, testDescription) VALUES (1, 'Test description 1');
 
-	
+5. Additional information
+   I order to create user with privileges other than localhost, % is wildcard :
+	CREATE USER ‘testuser’@’%’ IDENTIFIED BY ‘password’;
+   and grant privileges
+	GRANT ALL PRIVILEGES ON *.* TO ‘testuser'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
+   restart after modification of bind tables, …
+	sudo service mysql restart
    Allow remote access to database
 	check for bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf and comment line 127.0.0.1
 
-Create user with privileges other than localhost, % is wildcard :
-CREATE USER ‘testuser’@’%’ IDENTIFIED BY ‘password’;
-and grant privileges
-GRANT ALL PRIVILEGES ON *.* TO ‘testuser'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
-restart after modification of bind tables, …
-sudo service mysql restart
+
+===============
+MySQL Workbench
+===============
+1. Download installer op https://mysql.com/downloads, in section 'MySQL Community (GPL) Downloads
+   Selecteer MySQL Workbench, Operating System is Ubuntu Linux (check met commando "more /etc/os-release" in terminal)
+2. Installatie in stap 3 faalt wanneer dependency 'libmysqlclient21 nog niet geïnstalleerd is :
+	sudo apt --fix-broken install
+	sudo apt install libmysqlclient21
+3. Installeer vanuit Downloads folder met
+	sudo dpkg -i mysql-workbench-community_<versienummer> (autocomplete met Tab)
+4. Configure MySQL Workbench
+   Klik op '+' naast MySQL Connections
+   Connection name 'minimaze' voorusername 'Theseus', store password (hetzelfde) in keychain
+   Test Connection
+
+
+
 
