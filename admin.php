@@ -39,48 +39,26 @@
 							</div> -->
 							<div class="content">
 								<header class="align-center">
-								<p>Investigate things</p>
-									<h2>Parts</h2>
+								<p>PHP test</p>
+									<!--<h2>Parts</h2>-->
 								</header>
 								<p>
-									Explore part information, part structures and history.
+									<?php
+										// PHP test
+										echo "<strong>PHP is working!</strong><br>";
+										echo "Current PHP version: " . phpversion() . "<br>";
+
+										// Database connection test
+										if ($conn->connect_error) {
+											die("Connection failed: " . $conn->connect_error);
+										}
+										echo "<strong>Database connection successful!</strong><br>";
+										echo "Connected to database: " . $dbname . "<br>";
+
+										$conn->close();
+									?>
 								</p>
 
-								<!--Make sure the form has the autocomplete function switched off:-->
-								<form autocomplete="off" action="pages/part_details.php" method="get" enctype="multipart/form-data">
-			                        <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
-									<footer class="align-center">
-										<input type="submit" value="Search" class="button alt">
-									</footer>
-			                    </form>
-								<!-- Autocomplete -->
-					            <script src="scripts/autoComplete.js"></script>
-								<script>
-									<?php
-                                        $query = "SELECT DISTINCT Number FROM XML_demo.Parts ORDER BY Number";
-							      	    $result = $conn->query($query);
-										$numPart=0; // use counter to avoid printing comma before first result
-
-										if ($result->num_rows > 0){
-											// write array var declaration
-											echo 'var parts = [';
-											//echo '"option 1"';
-
-       								        while($row = $result->fetch_assoc()){
-											    $numPart++;
-    							                $partNumber = $row["Number"];
-											    if ($numPart!=1){echo ",";}
-							         	        echo '"' . $partNumber . '"';
-							                } // end loop all results
-
-   											// write array variable closing
-										    // echo ', "option 4"';
-										    echo "];";
-   						      		    } // end if num_rows > 0
-										// end adding parts to textfield autocomplete
-									?>
-					      	    autocomplete(document.getElementById("partNumber"), parts, 100);
-					            </script>
 
 							</div>
 						</div>
