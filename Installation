@@ -46,8 +46,25 @@ Database server
    Check user :
 	SELECT user FROM mysql.user;
 
-3. Create database
+3. Create database and test table :
+	sudo mysql -u root -p
 	CREATE DATABASE minimaze;
+	show databases;
+	use minimaze;
+
+   Create test table :
+	CREATE TABLE Persons (
+    	testID int,
+    	testDescription varchar(255)
+	);
+
+4. Test database local access
+	sudo mysql -u root -p
+	SHOW tables;
+	USE minimaze;
+	INSERT INTO minimaze (testID, testDescription) VALUES (1, 'Test description 1');
+
+	
    Allow remote access to database
 	check for bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf and comment line 127.0.0.1
 
