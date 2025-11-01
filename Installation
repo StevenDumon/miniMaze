@@ -25,6 +25,11 @@ Application server
     Reboot or restart services (check php versie) :
       sudo service php8.3-fpm restart
       sudo service nginx restart
+4. Folder permissions
+   Permissions for www folders
+	cd /var/www
+	sudo chown -R <username> html
+
 
 Database server
 1. Install MySQL :
