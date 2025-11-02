@@ -28,6 +28,7 @@ Application server
     Reboot or restart services (check php versie) :
       sudo service php8.3-fpm restart
       sudo service nginx restart
+
 4. Folder permissions
    Permissions for www folders
 	cd /var/www
@@ -75,15 +76,13 @@ Database server
 	USE minimaze;
 	INSERT INTO minimaze (testID, testDescription) VALUES (1, 'Test description 1');
 
-5. Allow remote access to database: Most default installs of MySQL only listen to the local machine.
-   check for bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf
+5. Most default installs of MySQL only listen to the local machine.
+   Allow remote access to database: check for bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf
    and comment line 127.0.0.1
-   
+   Look for the bind-address setting in my.cnf on the server, and make sure it's listening on the IP address you're targetting.
+   You may also need to ensure skip-networking isn't switched on!
 
-Look for the bind-address setting in my.cnf on the server, and make sure it's listening on the IP address you're targetting. You may also need to ensure skip-networking isn't switched on!
-
-
-5. Additional information
+6. Additional information
    In order to create user with privileges other than localhost, % is wildcard :
 	CREATE USER ‘testuser’@’%’ IDENTIFIED BY ‘password’;
    and grant privileges
@@ -95,13 +94,17 @@ Look for the bind-address setting in my.cnf on the server, and make sure it's li
 ===============
 MySQL Workbench
 ===============
+
 1. Download installer op https://mysql.com/downloads, in section 'MySQL Community (GPL) Downloads
    Selecteer MySQL Workbench, Operating System is Ubuntu Linux (check met commando "more /etc/os-release" in terminal)
-2. Installatie in stap 3 faalt wanneer dependency 'libmysqlclient21 nog niet geïnstalleerd is :
+
+2. Installatie in stap 3 faalt wanneer dependency 'libmysqlclient21' nog niet geïnstalleerd is :
 	sudo apt --fix-broken install
 	sudo apt install libmysqlclient21
+
 3. Installeer vanuit Downloads folder met
 	sudo dpkg -i mysql-workbench-community_<versienummer> (autocomplete met Tab)
+
 4. Configure MySQL Workbench
    Klik op '+' naast MySQL Connections
    Connection name 'minimaze' voorusername 'Theseus', store password (hetzelfde) in keychain
