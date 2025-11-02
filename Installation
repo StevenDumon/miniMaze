@@ -75,15 +75,21 @@ Database server
 	USE minimaze;
 	INSERT INTO minimaze (testID, testDescription) VALUES (1, 'Test description 1');
 
+5. Allow remote access to database: Most default installs of MySQL only listen to the local machine.
+   check for bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf
+   and comment line 127.0.0.1
+   
+
+Look for the bind-address setting in my.cnf on the server, and make sure it's listening on the IP address you're targetting. You may also need to ensure skip-networking isn't switched on!
+
+
 5. Additional information
-   I order to create user with privileges other than localhost, % is wildcard :
+   In order to create user with privileges other than localhost, % is wildcard :
 	CREATE USER ‘testuser’@’%’ IDENTIFIED BY ‘password’;
    and grant privileges
 	GRANT ALL PRIVILEGES ON *.* TO ‘testuser'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
    restart after modification of bind tables, …
 	sudo service mysql restart
-   Allow remote access to database
-	check for bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf and comment line 127.0.0.1
 
 
 ===============
