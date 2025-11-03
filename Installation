@@ -81,6 +81,12 @@ Database server
    and comment line 127.0.0.1
    Look for the bind-address setting in my.cnf on the server, and make sure it's listening on the IP address you're targetting.
    You may also need to ensure skip-networking isn't switched on!
+   For MySql version 8.0.13 and above, and MariaDB version 10.11 and above, you can specify
+   a list of comma-separated IP addresses.
+	bind-address = 10.0.0.1,10.0.1.1,10.0.2.1
+   wher restarting fails met 0.0.0.0, add [...] above the IP:
+	[mysqld]
+	bind-address = 0.0.0.0
 
 6. Additional information
    In order to create user with privileges other than localhost, % is wildcard :
