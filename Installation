@@ -40,6 +40,17 @@ Application server
 	cd /var/www
 	sudo chown -R <username> html
 
+5. Enable mysqli on PHP
+	/etc/php/{PHP_VERSION}/fpm/php.ini (for PHP-FPM with Nginx)
+   Here, we should replace {PHP_VERSION} with the installed version of PHP, such as “7.4” or “8.0”.
+   Note that the actual location might vary depending on the Linux distribution and how PHP was installed.
+   We can use the below command to find the exact location of the php.ini file:
+	$ php -i | grep "php.ini"
+   Configuration File (php.ini) Path => /etc
+   Loaded Configuration File => /etc/php.ini
+   Once we get the php.ini file path, we need to search for the line “extension=mysqli” or “extension=php_mysqli“.
+   Remove the semicolon (semicolon denotes a comment) to uncomment the line and save the file.
+
 
 ===============
 Database server
