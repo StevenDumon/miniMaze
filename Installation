@@ -12,6 +12,12 @@ Application server
    Verify the installed PHP version with php --version
      result showing e.g. PHP 8.3.6 indicates php8.3 !
 
+   The MySQLi extension is often available by default with PHP.
+   If not, then make sure to install it using the below commands explicitly:
+	sudo apt-get install php-mysqli
+   Test met (output mag niet leeg zijn...) :
+	php -m | grep mysqli
+
 3. Configure NGINX for PHP
    In your nginx site configuration, /etc/nginx/sites-available/default, add index.php
      index index.html index.htm to index index.php index.html index.htm
