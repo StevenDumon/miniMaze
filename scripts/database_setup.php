@@ -11,12 +11,12 @@
       echo "Creating tables in XML database" . "<br>";
 
       // Create Table Operations
-      $sql = "CREATE TABLE XML_demo.Operations (OperationsID VARCHAR(2) NOT NULL, Description VARCHAR(20) NOT NULL, PRIMARY KEY (OperationsID))";
+      $sql = "CREATE TABLE " . $dbname .".Operations (OperationsID VARCHAR(2) NOT NULL, Description VARCHAR(20) NOT NULL, PRIMARY KEY (OperationsID))";
       $result = $conn->query($sql);
       if ($result->num_rows < 1) { echo "Table Operations created" . "<br>";}
 
       // Populate Table Operations
-      $sql = "INSERT INTO XML_demo.Operations (OperationsID, Description) "
+      $sql = "INSERT INTO " . $dbname .".Operations (OperationsID, Description) "
         . "VALUES "
         . "('BR', 'Branden'), "
         . "('LS', 'Lasersnijden'), "
@@ -37,7 +37,7 @@
       if ($result->num_rows < 1) { echo "Operation values defined" . "<br>";}
 
       // Create Table 'Parts'
-      $sql = "CREATE TABLE XML_demo.Parts ("
+      $sql = "CREATE TABLE " . $dbname .".Parts ("
         ."PartID INT NOT NULL AUTO_INCREMENT, "
         ."Number VARCHAR(60) NOT NULL, "
         ."Name VARCHAR(60) NOT NULL, "
@@ -56,7 +56,7 @@
       if ($result->num_rows < 1) { echo "Table Operations created" . "<br>";}
 
       // Create Table 'PartUsage'
-      $sql = "CREATE TABLE XML_demo.PartUsage ("
+      $sql = "CREATE TABLE " . $dbname .".PartUsage ("
         ."PartUsageID INT NOT NULL AUTO_INCREMENT, "
         ."ParentID INT NOT NULL, "
         ."ChildID INT NOT NULL, "
@@ -67,7 +67,7 @@
       if ($result->num_rows < 1) { echo "Table Parts Usage created" . "<br>";}
 
       // Create Table 'ImportLog'
-      $sql = "CREATE TABLE XML_demo.ImportLog ("
+      $sql = "CREATE TABLE " . $dbname .".ImportLog ("
         ."ImportID INT NOT NULL AUTO_INCREMENT, "
         ."filename VARCHAR(60) NULL, "
         ."CreateDate VARCHAR(40) NULL , "
