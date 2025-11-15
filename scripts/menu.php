@@ -7,7 +7,11 @@ function writeMenu(){
   echo("  <nav id='menu'>");
   echo("    <ul class='links'>");
   echo("      <li><a href='index.php'>Home</a></li>");
-  //echo("      <li><a href='selectPart.html'>Parts</a>");
+  echo("      <p>Parts</p>");
+  echo("      <li><a href='importWindchillXML.php'>Import XML</a></li>");
+  echo("      <li><a href='partDetails.php'>Part Details</a></li>");
+//echo("      <li><a href='selectPart.html'>Parts</a>");
+  echo("      <p>Production</p>");
   echo("      <li><a href='selectProductionOrder.php'>View Production Order</a>");
   echo("      <li><a href='newProductionOrder.php'>New Production Order</a>");
   echo("      <li><a href='planning.php'>Planning</a></li>");
