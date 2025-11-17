@@ -1,4 +1,6 @@
 <?php
+  include("../classes/WTPart.php");
+
   // $servername = "localhost";
   // $username = "xml_demo";
   // $password = "xml_demo";
@@ -7,4 +9,6 @@
 	$username = "Theseus";
 	$password = "Theseus2025";
 	$dbname = "minimaze";
+
+  
 ?>

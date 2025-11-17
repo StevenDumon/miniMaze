@@ -175,7 +175,20 @@
 												echo "</ol>";
 												// clear newPart to null
 												$newPart->clearPart();
-											// $positionInLine += strlen("</Object>") -2;
+											}
+										}
+
+										// </SearchResults> einde van laatste artikel
+										if (substr($line, $positionInLine - strlen("</SearchResults>"), strlen("</SearchResults>")) === "</SearchResults>") {
+											// einde van een artikel, voeg part toe aan parts lijst
+											// wanneer partname niet leeg is, typisch voor allerlaatste artikel in de structuur
+											if ($newPart != null && $newPart->partname != "") {											
+												$partsList[] = $newPart->clone();
+												echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
+												// write end of attribute summary
+												echo "</ol>";
+												// clear newPart to null
+												$newPart->clearPart();
 											}
 										}
 
@@ -279,14 +292,59 @@
 							echo "</ul>";
                         ?>
 
+
 						<h2>Parts</h2>
-						<?php
-						foreach ($partsList as $part) {
-							echo "<p>" . htmlspecialchars($part->ToString()) . "</p>";
-						}
-						
-                        ?>
-                        <!--<p>Importeer Multilevel BOM reports uit Windchill in de Modelstructure for BOM view, geëxporteerd als XML bestand.</p>-->
+
+						<table class="alt">
+							<thead>
+								<tr>
+									<th>Test Column 1</th>
+									<th>Test Column 2</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Data 1</td>
+									<td>Data 2</td>
+								</tr>
+								<tr>
+									<td>Data 1</td>
+									<td>Data 2</td>
+								</tr>
+							</tbody>
+						</table>
+
+
+
+						<div class="table-wrapper">
+							<table class="alt">
+								<thead>
+									<tr>
+										<th>Part Number</th>
+										<th>CAD Number</th>
+										<th>Name</th>
+										<th>Version</th>
+										<th>Description</th>
+										<th>Material</th>
+										<th>Weight</th>
+										<th>Dimensions</th>
+										<th>Attest</th>
+										<th>Norm</th>
+										<th>RM Number</th>
+										<th>Remarks</th>
+										<th>State</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+										foreach ($partsList as $part) {
+											echo $part->ToTableRow();
+										}
+									?>
+								</tbody>
+							</table>
+						</div> <!-- class="table-wrapper"-->
+
 
                     </div> <!-- class="content"-->
                 </div> <!-- class="box" -->
