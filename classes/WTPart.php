@@ -12,7 +12,7 @@ class WTPart {
     public $dimensions;
     public $attest;
     public $norm;
-    public $operations = array(5)  ; // Array voor 5 bewerkingen
+    public $operations = array(5)  ; // Array voor 5 bewerkingen "BR", "PO", "PL", "ZA", "ZA"
     public $RMnumber;
     public $remarks; // schuine snede, markering, ...
     public $state;
@@ -21,7 +21,6 @@ class WTPart {
     // Constructor, runs automatically when creating an object
     public function __construct($partNumber, $CADNumber, $name, $version,$description, $material, $weight, $dimensions, $attest, $norm, $operations, $RMnumber, $remarks, $state) {
         $this->partNumber = $partNumber;
-        // echo "Constructor WTPart aangeroepen, part number is " . $partNumber . "<br>";
         $this->CADNumber = $CADNumber;
         $this->name = $name;
         $this->version = $version;
@@ -66,11 +65,37 @@ class WTPart {
         if ($posDecimal !== false) {
             $gewicht_truncated = substr($this->weight, 0, $posDecimal +3);
         }
-        return "<tr><td>" . $this->partNumber . "</td><td>" . $this->CADNumber . "</td><td>" . $this->name . "</td><td>" . $this->version . "</td><td>" . $this->description . "</td><td>" . $this->material . "</td><td>" . $gewicht_truncated . "</td><td>" . $this->dimensions . "</td><td>" . $this->attest . "</td><td>" . $this->norm . "</td><td>" . $this->RMnumber . "</td><td>" . $this->remarks . "</td><td>" . $this->state . "</td></tr>";
+
+        // isset vangt undefined variabelen op en vervangt door default waarde
+        // wanneer die niet bestaat
+
+        echo PHP_EOL; // start writing table row on new line for better readability of HTML source code
+
+        $tableRowStr = "<tr>";
+        $tableRowStr .= "<td>" . $this->partNumber . "</td>";
+        $tableRowStr .= "<td><strong>" . $this->CADNumber . "</strong></td>";
+        $tableRowStr .= "<td>" . $this->name . "</td>";
+        $tableRowStr .= "<td>" . $this->version . "</td>";
+        $tableRowStr .= "<td>" . $this->description . "</td>";
+        $tableRowStr .= "<td>" . $this->material . "</td>";
+        $tableRowStr .= "<td>" . (isset($gewicht_truncated) ? $gewicht_truncated : $this->weight) . "</td>";
+        $tableRowStr .= "<td>" . $this->dimensions . "</td>";
+        $tableRowStr .= "<td>" . (isset($this->operations[0]) ? $this->operations[0] : "") . "</td>";
+        $tableRowStr .= "<td>" . (isset($this->operations[1]) ? $this->operations[1] : "") . "</td>";
+        $tableRowStr .= "<td>" . (isset($this->operations[2]) ? $this->operations[2] : "") . "</td>";
+        $tableRowStr .= "<td>" . (isset($this->operations[3]) ? $this->operations[3] : "") . "</td>";
+        $tableRowStr .= "<td>" . (isset($this->operations[4]) ? $this->operations[4] : "") . "</td>";
+        $tableRowStr .= "<td>" . $this->attest . "</td>";
+        $tableRowStr .= "<td>" . $this->norm . "</td>";
+        $tableRowStr .= "<td>" . $this->RMnumber . "</td>";
+        $tableRowStr .= "<td>" . $this->remarks . "</td>";
+        $tableRowStr .= "<td>" . $this->state . "</td>";
+        $tableRowStr .= "</tr>";
+        return $tableRowStr;
     }
 
     public function clone(): WTPart {
-        echo "Clone methode van WTPart aangeroepen voor part number " . $this->partNumber . "<br>";
+        // echo "Clone methode van WTPart aangeroepen voor part number " . $this->partNumber . "<br>";
         return new WTPart(
             $this->partNumber,
             $this->CADNumber,
@@ -106,46 +131,58 @@ class WTPart {
         $this->state = "";
     }
 
-    public function addOrUpdateInDatabase() {
-    $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    public function addOrUpdateInDatabase($conn) {
+
+        // de combinatie van partnumber en versie is uniek, dus gebruiken we ON DUPLICATE KEY UPDATE
+        // hiervoor moet er wel een unieke index op partnumber en versie in de database staan
+        // SQL statement hiervoor :
+
+        // ALTER TABLE parts ADD UNIQUE(partNumber, version);
+
+        // Aanroepen van een stored procedure om een part toe te voegen of bij te werken:
+        // call minimaze.InsertNewPart(
+        //      'tst_part_update',              type 's' voor partNumber
+        //      'tst_part_update',              type 's' voor CADNumber
+        //      'Test Part Update',             type 's' voor Name
+        //      '00.1',                         type 's' voor Version
+        //      'DEMO STORED PROC',             Type 's' voor Description (stuklijstomschrijving)
+        //      '8.8',                          Type 's' voor materiaal
+        //      '2.5',                          Type 'd' voor gewicht
+        //      'M10x60',                       Type 's' voor afmetingen
+        //      'EN 4014',                      Type 's' voor Norm
+        //      'BR', 'PO', 'PL', 'ZA', 'ZA',   Type 's' voor bewerkingen 1-5)
+        //      'RM12345',                      Type 's' voor RMnumber
+        //      'No remarks',                   Type 's' voor Remarks
+        //      'Released');                    Type 's' voor State
+
+        // SQL injection voorkomen door prepared statements te gebruiken
+        $stmt = $conn->prepare("CALL minimaze.InsertNewPart(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        // binding string parameters to prevent SQL injection
+        $stmt->bind_param("ssssssdssssssssss",
+            $this->partNumber,
+            $this->CADNumber,
+            $this->name,
+            $this->version,
+            $this->description,
+            $this->material,
+            $this->weight,
+            $this->dimensions,
+            $this->norm,
+            $this->operations[0],
+            $this->operations[1],
+            $this->operations[2],
+            $this->operations[3],
+            $this->operations[4],
+            $this->RMnumber,
+            $this->remarks,
+            $this->state
+        );
+        
+        //$stmt->execute();
+        $stmt->close();
+//        $conn->close();
     }
 
-    // de combinatie van partnumber en versie is uniek, dus gebruiken we ON DUPLICATE KEY UPDATE
-    // hiervoor moet er wel een unieke index op partnumber en versie in de database staan
-    // SQL statement hiervoor :
-    // ALTER TABLE parts ADD UNIQUE(partNumber, version);
-
-
-    $sql = "INSERT INTO parts (partNumber, CADNumber, name, version, description, material, weight, dimensions, attest, norm, RMnumber, remarks, state)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-            CADNumber=VALUES(CADNumber), name=VALUES(name),
-            version=VALUES(version), description=VALUES(description),
-            material=VALUES(material), weight=VALUES(weight),
-            dimensions=VALUES(dimensions), attest=VALUES(attest),
-            norm=VALUES(norm), RMnumber=VALUES(RMnumber),
-            remarks=VALUES(remarks), state=VALUES(state)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssssssss",
-        $this->partNumber,
-        $this->CADNumber,
-        $this->name,
-        $this->version,
-        $this->description,
-        $this->material,
-        $this->weight,
-        $this->dimensions,
-        $this->attest,
-        $this->norm,
-        $this->RMnumber,
-        $this->remarks,
-        $this->state
-    );
-    $stmt->execute();
-    $stmt->close();
-    $conn->close();
-  }
-}
+} // einde class WTPart
 ?>
