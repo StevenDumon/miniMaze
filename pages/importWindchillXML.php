@@ -9,7 +9,7 @@
     	<?php include("../classes/WTPart.php"); ?>
 		<?php
 			include("../scripts/database_connection.php");
-			// $conn = new mysqli($servername, $username, $password, $dbname);
+			$conn = new mysqli($servername, $username, $password, $dbname);
 		?>
 
 		<?php
@@ -141,7 +141,9 @@
 											// bij overgang van een assembly naar een part-in-die-assembly wordt de assembly niet
 											// afgesloten met </Object>, maar begint er direct een nieuw <Object>
 											// dus als er al een part in opbouw is, deze eerst toevoegen aan de parts lijst
-											if ($newPart != null) {
+											if ($newPart != null && $newPart->name != "") {
+												echo "Einde artikel in structuur.<br>";
+												echo "Adding part number " . htmlspecialchars($newPart->partNumber) . ", name = " . htmlspecialchars($newPart->name) . " to parts list.<br>";
 												$partsList[] = $newPart->clone();
 												echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
 												// write end of attribute summary
@@ -167,8 +169,10 @@
 										//       Assembly level verlagen met 1
 										if (substr($line, $positionInLine - strlen("</Object>"), strlen("</Object>")) === "</Object>") {
 											// einde van een artikel, voeg part toe aan parts lijst
-											// wanneer partname niet leeg is, typisch voor allerlaatste artikel in de structuur
-											if ($newPart != null && $newPart->partname != "") {											
+											// wanneer partnumber niet leeg is, typisch voor allerlaatste artikel in de structuur
+											if ($newPart != null && $newPart->name != "") {
+												echo "Laatste artikel in structuur?<br>";
+												echo "Adding part number " . htmlspecialchars($newPart->partNumber) . ", name = " . htmlspecialchars($newPart->name) . " to parts list.<br>";
 												$partsList[] = $newPart->clone();
 												echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
 												// write end of attribute summary
@@ -181,8 +185,10 @@
 										// </SearchResults> einde van laatste artikel
 										if (substr($line, $positionInLine - strlen("</SearchResults>"), strlen("</SearchResults>")) === "</SearchResults>") {
 											// einde van een artikel, voeg part toe aan parts lijst
-											// wanneer partname niet leeg is, typisch voor allerlaatste artikel in de structuur
-											if ($newPart != null && $newPart->partname != "") {											
+											// wanneer partnumber niet leeg is, typisch voor allerlaatste artikel in de structuur
+											if ($newPart != null && $newPart->name != "") {											
+												echo "Einde SearchResults.<br>";
+												echo "Adding part number " . htmlspecialchars($newPart->partNumber) . ", name = " . htmlspecialchars($newPart->name) . " to parts list.<br>";
 												$partsList[] = $newPart->clone();
 												echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
 												// write end of attribute summary
@@ -196,7 +202,8 @@
 										//        van dat attribuut binnen het part dat gelezen wordt
 										if (substr($line, $positionInLine - strlen("<Attribute>") - 1, strlen("<Attribute>")) === "<Attribute>") {
 											// attribuut van het artikel beginnen lezen
-											$columnName = $columnHeaders[$columnIndexCounter - 1];
+											// $columnName = $columnHeaders[$columnIndexCounter - 1];
+											$columnName = $columnHeaders[$columnIndexCounter];
 											$endTagPos = strpos($line, "</Attribute>", $positionInLine - strlen("<Attribute>")) +1;
 											if ($endTagPos !== false) {
 												$attributeValue = trim(substr($line, $positionInLine-1, $endTagPos - $positionInLine));
@@ -206,7 +213,7 @@
 												// attribuut toewijzen aan part in functie van de kolom index
 												if ($columnIndexCounter == $columnIndexes["Number"]) {
 												    $newPart->partNumber = $attributeValue;
-													echo "Attribute for Part number set to " . htmlspecialchars($attributeValue) . "<br>";
+													// echo "Attribute for Part number set to " . htmlspecialchars($attributeValue) . "<br>";
 												} elseif ($columnIndexCounter == $columnIndexes["CAD Number"]) {
 													$newPart->CADNumber = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Version"]) {
@@ -292,30 +299,7 @@
 							echo "</ul>";
                         ?>
 
-
 						<h2>Parts</h2>
-
-						<table class="alt">
-							<thead>
-								<tr>
-									<th>Test Column 1</th>
-									<th>Test Column 2</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Data 1</td>
-									<td>Data 2</td>
-								</tr>
-								<tr>
-									<td>Data 1</td>
-									<td>Data 2</td>
-								</tr>
-							</tbody>
-						</table>
-
-
-
 						<div class="table-wrapper">
 							<table class="alt">
 								<thead>
@@ -328,6 +312,11 @@
 										<th>Material</th>
 										<th>Weight</th>
 										<th>Dimensions</th>
+										<th>Bew.1</th>
+										<th>Bew.2</th>
+										<th>Bew.3</th>
+										<th>Bew.4</th>
+										<th>Bew.5</th>
 										<th>Attest</th>
 										<th>Norm</th>
 										<th>RM Number</th>
@@ -339,6 +328,7 @@
 									<?php
 										foreach ($partsList as $part) {
 											echo $part->ToTableRow();
+											$part->addOrUpdateInDatabase($conn);
 										}
 									?>
 								</tbody>
