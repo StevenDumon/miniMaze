@@ -1,9 +1,4 @@
 <!DOCTYPE HTML>
-<!--
-	Hielo by TEMPLATED
-	templated.co @templatedco
-	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
 <html>
 	<head>
 		<title>miniMaze</title>
@@ -44,7 +39,7 @@
 
 								<!--Make sure the form has the autocomplete function switched off:-->
 								<form autocomplete="off" action="pages/part_details.php" method="get" enctype="multipart/form-data">
-						            <p><input type="text" id="partNumber" name="partNumber" placeholder="Part number"></p>
+						            <p><input type="text" id="CADNumber" name="CADNumber" placeholder="CAD number"></p>
 									<footer class="align-center">
 										<input type="submit" value="Search" class="button alt">
 									</footer>
@@ -55,8 +50,13 @@
 						      	<script src="scripts/autoComplete.js"></script>
 								<script>
 									<?php
-										$query = "SELECT DISTINCT Number FROM minimaze.Parts ORDER BY Number";
-							      		$result = $conn->query($query);
+										// Insecure, not safe agains SQL injection
+										// $query = "SELECT DISTINCT PartNumber FROM minimaze.Parts ORDER BY PartNumber";
+							      		//$result = $conn->query($query);
+										$stmt = $conn->prepare("SELECT DISTINCT PartNumber FROM minimaze.Parts ORDER BY PartNumber");
+										$stmt->execute();
+										$result = $stmt->get_result();
+
 										$numPart=0; // use counter to avoid printing comma before first result
 
 										if ($result->num_rows > 0){
@@ -77,7 +77,7 @@
 						      			} // end if num_rows > 0
 										// end adding parts to textfield autocomplete
 									?>
-						      		autocomplete(document.getElementById("partNumber"), parts, 100);
+						      		autocomplete(document.getElementById("CADNumber"), parts, 100);
 						    	</script>
 							</div> <!-- End of class Content -->
 						</div> <!-- End of class Box -->
