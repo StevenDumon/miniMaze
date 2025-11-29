@@ -7,6 +7,7 @@ function writeMenu(){
   echo("  <nav id='menu'>");
   echo("    <ul class='links'>");
   echo("      <li><a href='index.php'>Home</a></li>");
+  echo("      <li><a href='pages/projects.php'>Projects</a></li>");
   echo("      <li><a href='pages/selectWindchillXML.php'>Import XML</a></li>");
   echo("      <li><a href='pages/partDetails.php'>Part Details</a></li>");
   echo("      <li><a href='selectProductionOrder.php'>View Production Order</a>");
