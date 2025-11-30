@@ -55,7 +55,6 @@
 					<div class="content">
 						<header class="align-center">
 							<p>Import Windchill parts and structures</p>
-							<h2>Processing...</h2>
 						</header>
 
                         <?php
@@ -68,6 +67,11 @@
                                 $fileType = $_FILES['XMLfile']['type'];
                                 $fileSize = $_FILES['XMLfile']['size'];
 
+								echo "<h2 id='importStatus'>Processing file: " . htmlspecialchars($fileName) . "</h2>" . PHP_EOL;
+								// Output buffering, flush output to browser immediately
+								ob_flush();
+								flush();
+
                                 // file size limiet 10MB
                                 if ($fileSize > 10 * 1024 * 1024) {
                                     echo "Bestand is te groot. Maximaal 10MB toegestaan.";
@@ -77,11 +81,6 @@
                                 $fileContent = file_get_contents($tmpName);
 
                                 // Verwerk file content en voeg data toe in database
-
-                                echo "<p>";
-								echo "File <strong>" . htmlspecialchars($fileName) . "</strong> ingelezen.<br>";
-								echo "String length is " . strlen($fileContent) . " chars.";
-								echo "</p>";
 								// echo "<pre>" . htmlspecialchars($fileContent) . "</pre>";
 
 								// XML file regel per regel overlopen
@@ -94,13 +93,11 @@
 								$newPart = null;
 
 								foreach (explode("\n", $fileContent) as $line) {
-									// echo htmlspecialchars($line) . "<br>";
 									// elke lijn overlopen tot einde van de lijn
 									$lineNumber++;
 									$positionInLine=0;
 									$lineLength = strlen($line);
 									while ($positionInLine < $lineLength) {
-										// $char = $line[$positionInLine];
 										// elk karakter overlopen tot einde van de lijn
 										$positionInLine++;
 
@@ -142,18 +139,15 @@
 											// afgesloten met </Object>, maar begint er direct een nieuw <Object>
 											// dus als er al een part in opbouw is, deze eerst toevoegen aan de parts lijst
 											if ($newPart != null && $newPart->name != "") {
-												echo "Einde artikel in structuur.<br>";
-												echo "Adding part number " . htmlspecialchars($newPart->partNumber) . ", name = " . htmlspecialchars($newPart->name) . " to parts list.<br>";
 												$partsList[] = $newPart->clone();
-												echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
-												// write end of attribute summary
-												echo "</ol>";
+												//echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
+												//echo "</ol>";
 												// clear newPart to null
 												$newPart->clearPart();
 
 											}
 											// nieuw artikel beginnen
-											echo "Nieuw artikel begonnen (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
+											//echo "Nieuw artikel begonnen (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
 											$newPartOperations = array("", "", "", "", "");
 											$newPart = new WTPart("", "", "", "", "", "", "", "", "", "", $newPartOperations, "", "", "");
 											// kolom index teller op nul zetten
@@ -161,7 +155,7 @@
 
 											$positionInLine += strlen("<Object>") - 1;
 											// write start of attribute summary
-											echo "<ol>";
+											//echo "<ol>";
 
 										}
 
@@ -171,12 +165,9 @@
 											// einde van een artikel, voeg part toe aan parts lijst
 											// wanneer partnumber niet leeg is, typisch voor allerlaatste artikel in de structuur
 											if ($newPart != null && $newPart->name != "") {
-												echo "Laatste artikel in structuur?<br>";
-												echo "Adding part number " . htmlspecialchars($newPart->partNumber) . ", name = " . htmlspecialchars($newPart->name) . " to parts list.<br>";
 												$partsList[] = $newPart->clone();
-												echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
-												// write end of attribute summary
-												echo "</ol>";
+												//echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
+												//echo "</ol>";
 												// clear newPart to null
 												$newPart->clearPart();
 											}
@@ -187,12 +178,10 @@
 											// einde van een artikel, voeg part toe aan parts lijst
 											// wanneer partnumber niet leeg is, typisch voor allerlaatste artikel in de structuur
 											if ($newPart != null && $newPart->name != "") {											
-												echo "Einde SearchResults.<br>";
-												echo "Adding part number " . htmlspecialchars($newPart->partNumber) . ", name = " . htmlspecialchars($newPart->name) . " to parts list.<br>";
 												$partsList[] = $newPart->clone();
-												echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
+												//echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
 												// write end of attribute summary
-												echo "</ol>";
+												//echo "</ol>";
 												// clear newPart to null
 												$newPart->clearPart();
 											}
@@ -207,9 +196,9 @@
 											$endTagPos = strpos($line, "</Attribute>", $positionInLine - strlen("<Attribute>")) +1;
 											if ($endTagPos !== false) {
 												$attributeValue = trim(substr($line, $positionInLine-1, $endTagPos - $positionInLine));
-												echo "<li>Attribuut " . $columnIndexCounter .": <strong>" . $columnName . "</strong> : " . htmlspecialchars($attributeValue) . "<br>";
+												// echo "<li>Attribuut " . $columnIndexCounter .": <strong>" . $columnName . "</strong> : " . htmlspecialchars($attributeValue) . "<br>";
 												// echo "Start at " . $positionInLine. ", endTagPos=" . $endTagPos;
-												echo "</li>";
+												// echo "</li>";
 												// attribuut toewijzen aan part in functie van de kolom index
 												if ($columnIndexCounter == $columnIndexes["Number"]) {
 												    $newPart->partNumber = $attributeValue;
@@ -218,6 +207,14 @@
 													$newPart->CADNumber = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Version"]) {
 													$newPart->version = $attributeValue;
+													// version van artikel bevat oov view Design of Manufacturing, niet relevant voor miniMaze
+													// version afkappen voor eerste haakje (open) :
+													$posOpenBracket = strpos($attributeValue, "(");
+													if ($posOpenBracket !== false) {
+														$newPart->version = trim(substr($attributeValue, 0, $posOpenBracket));
+													} else {
+														$newPart->version = $attributeValue;
+													}
 												} elseif ($columnIndexCounter == $columnIndexes["Name"]) {
 													$newPart->name = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Omschrijving stuklijst NL"]) {
@@ -259,9 +256,6 @@
 
 								} // einde foreach lijn
 
-
-								echo "Import voltooid.";
-
                             } else {
                                 echo "Fout bij upload...";
                             }
@@ -271,9 +265,10 @@
                         }
                         ?>
 
-						<h2>Kolom index overzicht</h2>
 
 						<?php
+							/*
+							echo "<h2>Kolom index overzicht</h2>";
 							echo "<ul>";
 
 							echo "<li>Kolom index voor Structure Level: " . $columnIndexes["Structure Level"] . "</li>";
@@ -297,8 +292,14 @@
 							echo "<li>Kolom index voor Snede: " . $columnIndexes["Snede"] . "</li>";
 							echo "<li>Kolom index voor State: " . $columnIndexes["State"] . "</li>";
 							echo "</ul>";
+							*/
                         ?>
-
+					</div> <!-- class="content"-->
+				</div> <!-- class="box" -->
+				
+				<div class="box">
+					<div class="content">
+						
 						<h2>Parts</h2>
 						<div class="table-wrapper">
 							<table class="alt">
@@ -338,7 +339,22 @@
 
                     </div> <!-- class="content"-->
                 </div> <!-- class="box" -->
+
+				<div class="box">
+					<div class="content">
+						<h2>Build part structure</h2>
+						<p>Total parts imported: <?php echo count($partsList); ?></p>
+					</div> <!-- class="content"-->
+				</div> <!-- class="box" -->
+
             </div> <!-- class="inner" -->
+
+			<!-- Update page title to show import status -->
+			<script>
+				document.title = "miniMaze - Import Windchill structure - Completed";
+				document.getElementById("importStatus").innerText += " - Completed";
+			</script>
+
 			<div class="inner">
 				<div class="box">
 					<div class="content">

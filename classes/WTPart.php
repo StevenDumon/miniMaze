@@ -26,7 +26,7 @@ class WTPart {
         $this->version = $version;
         $this->description = $description; // Stuklijstomschrijving
         $this->material = $material;
-        $this->weight = $weight;
+        $this->weight = (float) $weight;
         $this->dimensions = $dimensions;
         $this->attest = $attest;
         $this->norm = $norm;
@@ -179,7 +179,7 @@ class WTPart {
             $this->state
         );
         
-        //$stmt->execute();
+        $stmt->execute();
         $stmt->close();
 //        $conn->close();
     }
