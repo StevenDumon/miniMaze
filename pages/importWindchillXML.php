@@ -5,9 +5,9 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="../assets/css/main.css" />
-    	<?php include("../scripts/menu.php"); ?>
-    	<?php include("../classes/WTPart.php"); ?>
-		<?php
+    	<?php
+			include("../scripts/menu.php");
+    		include("../classes/WTPart.php");
 			include("../scripts/database_connection.php");
 			$conn = new mysqli($servername, $username, $password, $dbname);
 		?>
@@ -87,10 +87,15 @@
 								$lineNumber = 0;
 								// colom index teller op nul zetten
 								$columnIndexCounter = 0;
-								//lijst met parts
+								// lijst met parts
 								$partsList = array();
+								// lijst met parent-child relaties
+								$parentChildRelations = array();
 								// part 'under construcion', collecting attributes
 								$newPart = null;
+								//parameters voor parent-child relatie
+								$quantity = 0;
+								$certificateType = "";
 
 								foreach (explode("\n", $fileContent) as $line) {
 									// elke lijn overlopen tot einde van de lijn
@@ -140,22 +145,23 @@
 											// dus als er al een part in opbouw is, deze eerst toevoegen aan de parts lijst
 											if ($newPart != null && $newPart->name != "") {
 												$partsList[] = $newPart->clone();
-												//echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
-												//echo "</ol>";
-												// clear newPart to null
+												// parent opzoeken wanneer niet op top-assembly level
+												if (count($partsList) > 1) {
+													$newParentChildRelation = new ParentChildRelation(null, null, null, null, $quantity, $certificateType);
+													$newParentChildRelation = $newParentChildRelation->getParentChildObject($partsList, $quantity, $certificateType);
+													$parentChildRelations[] = $newParentChildRelation;
+												}
 												$newPart->clearPart();
 
 											}
 											// nieuw artikel beginnen
 											//echo "Nieuw artikel begonnen (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
 											$newPartOperations = array("", "", "", "", "");
-											$newPart = new WTPart("", "", "", "", "", "", "", "", "", "", $newPartOperations, "", "", "");
+											$newPart = new WTPart(0, "", "", "", "", "", "", "", "", "", "", $newPartOperations, "", "", "");
 											// kolom index teller op nul zetten
 											$columnIndexCounter = 0;
 
 											$positionInLine += strlen("<Object>") - 1;
-											// write start of attribute summary
-											//echo "<ol>";
 
 										}
 
@@ -166,9 +172,7 @@
 											// wanneer partnumber niet leeg is, typisch voor allerlaatste artikel in de structuur
 											if ($newPart != null && $newPart->name != "") {
 												$partsList[] = $newPart->clone();
-												//echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
-												//echo "</ol>";
-												// clear newPart to null
+												
 												$newPart->clearPart();
 											}
 										}
@@ -179,9 +183,6 @@
 											// wanneer partnumber niet leeg is, typisch voor allerlaatste artikel in de structuur
 											if ($newPart != null && $newPart->name != "") {											
 												$partsList[] = $newPart->clone();
-												//echo "Einde van artikel (lijn ". $lineNumber . ", pos " . $positionInLine . ").<br>";
-												// write end of attribute summary
-												//echo "</ol>";
 												// clear newPart to null
 												$newPart->clearPart();
 											}
@@ -191,23 +192,22 @@
 										//        van dat attribuut binnen het part dat gelezen wordt
 										if (substr($line, $positionInLine - strlen("<Attribute>") - 1, strlen("<Attribute>")) === "<Attribute>") {
 											// attribuut van het artikel beginnen lezen
-											// $columnName = $columnHeaders[$columnIndexCounter - 1];
 											$columnName = $columnHeaders[$columnIndexCounter];
 											$endTagPos = strpos($line, "</Attribute>", $positionInLine - strlen("<Attribute>")) +1;
 											if ($endTagPos !== false) {
 												$attributeValue = trim(substr($line, $positionInLine-1, $endTagPos - $positionInLine));
-												// echo "<li>Attribuut " . $columnIndexCounter .": <strong>" . $columnName . "</strong> : " . htmlspecialchars($attributeValue) . "<br>";
-												// echo "Start at " . $positionInLine. ", endTagPos=" . $endTagPos;
-												// echo "</li>";
 												// attribuut toewijzen aan part in functie van de kolom index
-												if ($columnIndexCounter == $columnIndexes["Number"]) {
+												if ($columnIndexCounter == $columnIndexes["Structure Level"]) {
+												    $newPart->structureLevel = $attributeValue;
+													// echo "Attribute for Structure Level set to " . htmlspecialchars($attributeValue) . "<br>";
+												} elseif ($columnIndexCounter == $columnIndexes["Number"]) {
 												    $newPart->partNumber = $attributeValue;
 													// echo "Attribute for Part number set to " . htmlspecialchars($attributeValue) . "<br>";
 												} elseif ($columnIndexCounter == $columnIndexes["CAD Number"]) {
 													$newPart->CADNumber = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Version"]) {
 													$newPart->version = $attributeValue;
-													// version van artikel bevat oov view Design of Manufacturing, niet relevant voor miniMaze
+													// version van artikel bevat ook view Design of Manufacturing, niet relevant voor miniMaze
 													// version afkappen voor eerste haakje (open) :
 													$posOpenBracket = strpos($attributeValue, "(");
 													if ($posOpenBracket !== false) {
@@ -215,6 +215,9 @@
 													} else {
 														$newPart->version = $attributeValue;
 													}
+												} elseif ($columnIndexCounter == $columnIndexes["Quantity"]) {
+													// attribuut niet bijhouden op part niveau, maar bijhouden voor parent-child relatie
+													$quantity = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Name"]) {
 													$newPart->name = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Omschrijving stuklijst NL"]) {
@@ -227,6 +230,7 @@
 													$newPart->dimensions = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Attest"]) {
 													$newPart->attest = $attributeValue;
+													$certificateType = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["GDF_NORM"]) {
 													$newPart->norm = $attributeValue;
 												} elseif ($columnIndexCounter == $columnIndexes["Bewerking 1 in BOM"]) {
@@ -256,6 +260,7 @@
 
 								} // einde foreach lijn
 
+
                             } else {
                                 echo "Fout bij upload...";
                             }
@@ -266,34 +271,6 @@
                         ?>
 
 
-						<?php
-							/*
-							echo "<h2>Kolom index overzicht</h2>";
-							echo "<ul>";
-
-							echo "<li>Kolom index voor Structure Level: " . $columnIndexes["Structure Level"] . "</li>";
-							echo "<li>Kolom index voor Number: " . $columnIndexes["Number"] . "</li>";
-							echo "<li>Kolom index voor CAD Number: " . $columnIndexes["CAD Number"] . "</li>";
-							echo "<li>Kolom index voor Version: " . $columnIndexes["Version"] . "</li>";
-							echo "<li>Kolom index voor Quantity: " . $columnIndexes["Quantity"] . "</li>";
-							echo "<li>Kolom index voor Name: " . $columnIndexes["Name"] . "</li>";
-							echo "<li>Kolom index voor Omschrijving stuklijst NL: " . $columnIndexes["Omschrijving stuklijst NL"] . "</li>";
-							echo "<li>Kolom index voor BOM afmetingen: " . $columnIndexes["BOM afmetingen"] . "</li>";
-							echo "<li>Kolom index voor GDF_NORM: " . $columnIndexes["GDF_NORM"] . "</li>";
-							echo "<li>Kolom index voor Materiaal: " . $columnIndexes["Materiaal"] . "</li>";
-							echo "<li>Kolom index voor Attest: " . $columnIndexes["Attest"] . "</li>";
-							echo "<li>Kolom index voor Gewicht: " . $columnIndexes["Gewicht"] . "</li>";
-							echo "<li>Kolom index voor Bewerking 1 in BOM: " . $columnIndexes["Bewerking 1 in BOM"] . "</li>";
-							echo "<li>Kolom index voor Bewerking 2 in BOM: " . $columnIndexes["Bewerking 2 in BOM"] . "</li>";
-							echo "<li>Kolom index voor Bewerking 3 in BOM: " . $columnIndexes["Bewerking 3 in BOM"] . "</li>";
-							echo "<li>Kolom index voor Bewerking 4 in BOM: " . $columnIndexes["Bewerking 4 in BOM"] . "</li>";
-							echo "<li>Kolom index voor Bewerking 5 in BOM: " . $columnIndexes["Bewerking 5 in BOM"] . "</li>";
-							echo "<li>Kolom index voor Grondstofnummer: " . $columnIndexes["Grondstofnummer"] . "</li>";
-							echo "<li>Kolom index voor Snede: " . $columnIndexes["Snede"] . "</li>";
-							echo "<li>Kolom index voor State: " . $columnIndexes["State"] . "</li>";
-							echo "</ul>";
-							*/
-                        ?>
 					</div> <!-- class="content"-->
 				</div> <!-- class="box" -->
 				
@@ -327,10 +304,17 @@
 								</thead>
 								<tbody>
 									<?php
+										// Verwerking van partsList : elk part weergeven in tabel en toevoegen aan database
 										foreach ($partsList as $part) {
 											echo $part->ToTableRow();
 											$part->addOrUpdateInDatabase($conn);
 										}
+
+										// verwerking van parent-child relaties
+										foreach ($parentChildRelations as $relation) {
+											$relation->addOrUpdateParentChild($conn, $relation['parentPartNumber'], $relation['parentVersion'], $relation['childPartNumber'], $relation['childVersion'], $relation['quantity'], $relation['certificateType']);
+										}
+										
 									?>
 								</tbody>
 							</table>
@@ -344,6 +328,55 @@
 					<div class="content">
 						<h2>Build part structure</h2>
 						<p>Total parts imported: <?php echo count($partsList); ?></p>
+
+						<?php
+
+							// TODO : de parent-child relaties niet opzoeken nadat alle parts zijn toegevoegd aan de database,
+							// maar tijdens het toevoegen van elk part, zodat de parent-child relaties meteen in de database
+							// worden opgeslagen. Op dat moment is de quantity gekend, die niet in de partsList is opgeslagen.
+
+							// Opbouw structuur: partsList overlopen en van elk artikel zijn parent zoeken.
+							// Stored procedure gebruiken om parent-child relatie in database op te slaan
+/*							$numParts = count($partsList);
+							// Output buffering, flush output to browser immediately
+							ob_flush();
+							flush();
+							$partCounter = 0;
+
+							foreach ($partsList as $part) {
+								$parentFound = false;
+								// zoek parent in partsList
+								if ($part->structureLevel == 0) {
+									// top level part, geen parent
+								}
+								else {
+									// parent zoeken met 1 level lager structure level
+									for ($i = count($partsList) - 1; $i >= 0; $i--) {
+										$potentialParent = $partsList[$i];
+										if ($potentialParent->structureLevel == $part->structureLevel - 1) {
+											// parent gevonden
+											$parent = $potentialParent->clone();
+											$parentFound = true;
+											break;;
+										}
+									}
+								}
+									
+								// voeg parent-child relatie toe in database via stored procedure
+								
+								$partCounter++;
+								echo "Processing part " . $partCounter . " of " . $numParts;
+								if ($parentFound) {
+									echo " - Part: " . htmlspecialchars($part->partNumber) . " (Version: " . htmlspecialchars($part->version) . ") , Parent: " . htmlspecialchars($parent->partNumber) . " (Version: " . htmlspecialchars($parent->version) . ")<br>" . PHP_EOL;
+										// Output buffering, flush output to browser immediately
+									ob_flush();
+									flush();
+									// call stored procedure to add part with parent
+									WTPart::addOrUpdateParentChild($conn, $parent->partNumber, $parent->version, $part->partNumber, $part->version, $part->quantity, $part->certificateType);
+								}
+							} // einde foreach partsList voor opzoeken parent						
+							 */
+							?>
 					</div> <!-- class="content"-->
 				</div> <!-- class="box" -->
 

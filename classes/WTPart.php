@@ -2,6 +2,7 @@
 include("../scripts/database_connection.php");
 
 class WTPart {
+    public $structureLevel;
     public $partNumber;
     public $CADNumber;
     public $name;
@@ -19,7 +20,8 @@ class WTPart {
 
 
     // Constructor, runs automatically when creating an object
-    public function __construct($partNumber, $CADNumber, $name, $version,$description, $material, $weight, $dimensions, $attest, $norm, $operations, $RMnumber, $remarks, $state) {
+    public function __construct($structureLevel, $partNumber, $CADNumber, $name, $version,$description, $material, $weight, $dimensions, $attest, $norm, $operations, $RMnumber, $remarks, $state) {
+        $this->structureLevel = $structureLevel;
         $this->partNumber = $partNumber;
         $this->CADNumber = $CADNumber;
         $this->name = $name;
@@ -97,6 +99,7 @@ class WTPart {
     public function clone(): WTPart {
         // echo "Clone methode van WTPart aangeroepen voor part number " . $this->partNumber . "<br>";
         return new WTPart(
+            $this->structureLevel,
             $this->partNumber,
             $this->CADNumber,
             $this->name,
@@ -181,8 +184,98 @@ class WTPart {
         
         $stmt->execute();
         $stmt->close();
-//        $conn->close();
     }
 
+
+
 } // einde class WTPart
+
+class ParentChildRelation  {
+    public $parentNumber;
+    public $parentVersion;
+    public $childNumber;
+    public $childVersion;
+    public $quantity;
+    public $certificateType;
+    
+    public function __construct($parentNumber, $parentVersion, $childNumber, $childVersion, $quantity, $certificateType) {
+        $this->parentNumber = $parentNumber;
+        $this->parentVersion = $parentVersion;
+        $this->childNumber = $childNumber;
+        $this->childVersion = $childVersion;
+        $this->quantity = $quantity;
+        $this->certificateType = $certificateType;
+    }
+
+    public function getParentChildObject($partsList, $quantity, $certificateType): ParentChildRelation {
+        // meegegeven parameter $partsList is een array van WTPart objecten waarvoor de parent van het
+        // laatste WTPart object gezocht wordt.
+        echo "Zoeken naar parent voor child part in parent-child relatie...<br>";
+        echo "Parts in partsList: <br>";
+        foreach ($partsList as $part) {
+            echo "PartNumber: " . $part->partNumber . ", StructureLevel: " . $part->structureLevel . "<br>";
+        }
+
+        $lastPartIndex = count($partsList) - 1;
+        $childPart = $partsList[$lastPartIndex];
+        $parentPart = null;
+
+        // zoek parent in partsList
+		if ($childPart->structureLevel == 0) {
+		    // top level part, geen parent
+	        $parent = null; 
+        } // einde if structureLevel == 0
+		else {
+			// parent zoeken met 1 level lager structure level
+			for ($i = count($partsList) - 1; $i >= 0; $i--) {
+			    $potentialParent = $partsList[$i];
+			    if ($potentialParent->structureLevel == $childPart->structureLevel - 1) {
+				    // parent gevonden
+					echo "Parent gevonden voor child part " . $childPart->partNumber . " : " . $potentialParent->partNumber . "<br>";
+                    $parentPart = $potentialParent->clone();
+					break;;
+				} 
+			} // einde for
+		} // einde else structureLevel != 0
+
+        return new ParentChildRelation(
+            $parentPart->partNumber,
+            $parentPart->version,
+            $childPart->partNumber,
+            $childPart->version,
+            $quantity,
+            $certificateType
+        );
+    }
+
+    public function addOrUpdateParentChild($conn) {
+
+        // Aanroepen van een stored procedure om een parent-child record toe te voegen
+        // of bij te werken:
+
+        // call minimaze.InsertNewPart(
+        //      'tst_part_parent',              type 's' voor parent partNumber
+        //      '00.',                          type 's' voor parent version
+        //      'tst_part_child',               type 's' voor child partNumber
+        //      '00.',                          type 's' voor child version
+        //      10,                             type 'd' voor quantity
+        //      'Type A');                      type 's' voor certificateType
+
+        // SQL injection voorkomen door prepared statements te gebruiken
+        $stmt = $conn->prepare("CALL minimaze.InsertNewPart(?, ?, ?, ?, ?, ?)");
+
+        // binding string parameters to prevent SQL injection
+        $stmt->bind_param("ssssds",
+            $this->parentNumber,
+            $this->parentVersion,
+            $this->childNumber,
+            $this->childVersion,
+            $this->quantity,
+            $this->certificateType
+        );
+        
+        $stmt->execute();
+        $stmt->close();
+    }    
+} // einde class ParentChildRelation
 ?>
